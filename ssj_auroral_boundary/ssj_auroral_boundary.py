@@ -195,12 +195,12 @@ class absatday(object):
 		self.polarpasses = []
 		
 		#Look for environemnt variables to define paths if no paths provided
-		imgdir = self.substitute_none_for_envvar(imgdir,'DMSP_DIR_ABIMG')
+		imgdir = self.if_none_use_envvar(imgdir,'DMSP_DIR_ABIMG')
 		if imgdir is None:
 			raise RuntimeError('No image dir passed & no DMSP_DIR_ABIMG envvar')
 		self.imgdir = imgdir
 
-		csvdir = self.substitute_none_for_envvar(csvdir,'DMSP_DIR_ABCSV')
+		csvdir = self.if_none_use_envvar(csvdir,'DMSP_DIR_ABCSV')
 		if csvdir is None:
 			raise RuntimeError('No csv dir passed & no DMSP_DIR_ABCSV envvar')
 		
@@ -213,7 +213,7 @@ class absatday(object):
 			newpass = abpolarpass(self,self.xings[i],self.xings[i+1]-1)
 			self.polarpasses.append(newpass)
 
-	def substitute_none_for_envvar(self,checkvar,envvar):
+	def if_none_use_envvar(self,checkvar,envvar):
 		"""Check for environment variable envvar if checkvar is None
 		"""
 		if checkvar is None and envvar in os.environ:
@@ -846,7 +846,7 @@ class abpolarpass(object):
 		for i,seg in enumerate(reversed(self.segments[pole2segnum+1:])):
 			if ( seg.twidth >= self.MIN_EQ_SPIKE_DT and seg.area_uncert < np.nanmean(self['total_flux_std'])):
 				self.log.info("Found second equatorward boundary at segment #%d:%s" % (len(self.segments)-i,str(seg)))
-				idx_equator2 = seg.ei     #if meets time requirement, define as boundary
+				idx_equator2 = seg.ei #if meets time requirement, define as boundary
 				break
 
 		if idx_equator2 is None:
