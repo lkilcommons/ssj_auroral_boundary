@@ -10,8 +10,9 @@ mpl.use('Agg') # Use the non-GUI backend
 from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms
 from spacepy import pycdf
-import logging,sys,subprocess,datetime,os,argparse,shutil,traceback
-from geospacepy import special_datetime, satplottools, dmsp_spectrogram
+import logging,sys,datetime,os,argparse,shutil,traceback,requests
+from geospacepy import special_datetime, satplottools
+import dmsp_spectrogram
 try:
 	import seaborn as sns
 except:
@@ -855,16 +856,56 @@ class abpolarpass(object):
 		
 		return idx_pole1,idx_equator1,idx_pole2,idx_equator2,segpole1,segpole2	
 
-def copy_test_data_and_return_cdffn(destdir):
+def test_cdf_path_and_filename():
 	#Determine where this module's source file is located
 	#to determine where to look for the test data
 	src_file_dir = os.path.dirname(os.path.realpath(__file__))
 	test_data_dir = os.path.join(src_file_dir,'test_data')
 	test_cdffn = 'dmsp-f16_ssj_precipitating-electrons-ions_20100529_v1.1.2.cdf'
+	return test_data_dir,test_cdffn
+
+def copy_test_data_and_return_cdffn(destdir):
 	shutil.copy(os.path.join(test_data_dir,test_cdffn),
 				destdir)
+	test_data_dir,test_cdffn = test_cdf_path_and_filename()	
 	return os.path.join(destdir,test_cdffn)
 
+def cdf_url_and_filename(dmsp_number,year,month,day):
+	cdffn = ('dmsp-f%.2d' % (dmsp_number)
+	 		+'_ssj_precipitating-electrons-ions_'
+			+'%d%.2d%.2d_v1.1.2.cdf' % (year,month,day))
+
+	root_url = 'https://satdat.ngdc.noaa.gov/dmsp/data/'
+	one_month_ssj_data_url = 'f%.2d/ssj/%d/%.2d/' % (dmsp_number,year,month)
+	#Expected CDF file
+	cdf_url = root_url+one_month_ssj_data_url+cdffn
+	return cdf_url,cdffn
+
+def download_cdf_from_noaa(cdf_url,destination_cdffn):
+	head = requests.head(cdf_url,allow_redirects=True)
+	headers = head.headers
+	content_type = headers.get('content-type')
+	print(headers,content_type)
+	if 'html' not in content_type.lower():
+		response = requests.get(cdf_url,allow_redirects=True)
+		with open(destination_cdffn,'w') as f:
+			f.write(response.content)
+	else:
+		raise RuntimeError('URL %s is not downloadable' % (cdf_url))
+
+def prepare_output_directories(data_rootdir,out_subdir):
+	dirs = {
+			'data': os.path.join(data_rootdir,'data'),
+			'image': os.path.join(data_rootdir,out_subdir,'img'),
+			'csv': os.path.join(data_rootdir,out_subdir,'csv')
+			}
+
+	for dirkey,directory in dirs.iteritems():
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+
+	return dirs
+	
 if __name__=='__main__':
 
 	parser = argparse.ArgumentParser(description="DMSP SSJ auroral boundary identification")
@@ -897,13 +938,16 @@ if __name__=='__main__':
 							action='store_true',
 							help="Plot unsuccessful identifiations",
 							default=False)
-	parser.add_argument("--dumpdir",
+	parser.add_argument("--datarootdir",
 							help="Root directory for CDF data, plots and CSVs",
 							default='/tmp/ssj_auroral_boundary')
 	parser.add_argument("--test",
 							action='store_true',
 							help="Test using the included CDF",
 							default=False)
+	parser.add_argument("--quiet",
+							action='store_true',
+							help="Suppress most log messages (loglevel=FATAL)")
 
 	args = parser.parse_args()
 	
@@ -911,7 +955,11 @@ if __name__=='__main__':
 			
 	# create console handler with a lower log level
 	ch = logging.StreamHandler()
-	ch.setLevel(logging.DEBUG)
+
+	loglevel = logging.FATAL if args.quiet else logging.INFO
+	ch.setLevel(loglevel)
+	
+
 
 	starttime = datetime.datetime.now().strftime('%H:%M:%S')
 
@@ -939,50 +987,41 @@ if __name__=='__main__':
 	log.addHandler(ch)
 
 	#Output root directory
-	dumpdir_root = args.dumpdir
-	
-	#Expected CDF file
-	cdffn = ('dmsp-f%.2d' % (args.dmsp_number)
-	 		+'_ssj_precipitating-electrons-ions_'
-			+'%d%.2d%.2d_v1.1.2.cdf' % (args.year,args.month,args.day))
+	data_rootdir = args.datarootdir
 
-	#Use text of CDF filename as subdirectory
-	cdffn = os.path.split(cdffn)[-1]
-	cdffn_as_subdir = os.path.splitext(cdffn)[0]
-	dump_subdir = cdffn_as_subdir
-	
-	#All directories
-	dumpdirs = {
-			'data': os.path.join(dumpdir_root,'data'),
-			'image': os.path.join(dumpdir_root,dump_subdir,'img'),
-			'csv': os.path.join(dumpdir_root,dump_subdir,'csv')
-			}
+	#Spacecraft and date
+	dmsp_number = args.dmsp_number
+	year,month,day = args.year,args.month,args.day
+
+	#CSV/Plot subdirectory for this spacecraft
+	out_subdir = 'F%.2d_%d%.2d%.2d'%(dmsp_number,year,month,day)
+
 	try:
-		for dirkey,directory in dumpdirs.iteritems():
-			if not os.path.exists(directory):
-				os.makedirs(directory)
+		dirs = prepare_output_directories(data_rootdir,out_subdir)
 	except:
 		print(traceback.format_exc())
-		log.fatal('Unable to create output directory %s' % (dumpdir_root))
-		print(('Could not create output directory %s.\n' % (dumpdir_root)
-				+' You can manually specify where to put data'
-				+' using the --dumpdir command line argument'))
+		log.fatal('Could not create output directories.' % (data_rootdir))
 		raise
-	
-	#Use the test CDF file, overriding the other settings if we are running
-	#the builtin test run
+
 	if args.test:
-		cdffn = copy_test_data_and_return_cdffn(dumpdirs['data'])
+		#Use the test CDF file, overriding the satnum and date settings
+		cdffn = copy_test_data_and_return_cdffn(dirs['data'])
 		log.warn('--test command line argument overrides '
 				 'satellite, year, month, day settings')
 	else:
-		cdffn = os.path.join(dumpdirs['data'],cdffn)
+		#Try to download CDF if can't find it in the data directory	
+		url_and_fn = cdf_url_and_filename(dmsp_number,year,month,day)
+		cdf_url,cdffn = url_and_fn
+		cdffn = os.path.join(dirs['data'],cdffn)
+		if not os.path.exists(cdffn):
+			log.info('CDF %s does not exist, attempting to download' % (cdffn))
+			download_cdf_from_noaa(cdf_url,cdffn)
 
 	log.info('Beginning run of CDF file %s' % (cdffn))
 	
 	absd = absatday(cdffn,
-					imgdir=dumpdirs['image'],
-					csvdir=dumpdirs['csv'],
+					imgdir=dirs['image'],
+					csvdir=dirs['csv'],
 					make_plot=args.makeplots,
 					plot_failed=args.plotfailed,
 					writecsv=(not args.nocsv))

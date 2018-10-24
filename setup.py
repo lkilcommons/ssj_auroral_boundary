@@ -13,7 +13,7 @@ from setuptools import setup, Extension
 from setuptools.command import install as _install
 
 setup(name='ssj_auroral_boundary',
-      version = "0.9",
+      version = "0.1",
       description = "Figure of Merit Boundary Identification for DMSP SSJ5",
       author = "Liam Kilcommons",
       author_email = 'liam.kilcommons@colorado.edu',
