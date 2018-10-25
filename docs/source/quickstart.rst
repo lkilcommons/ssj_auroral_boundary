@@ -19,9 +19,9 @@ A sample CDF file is included with the package. Running this code,
 .. testcode::
 
 	import os
-	from ssj_auroral_boundary import ssj_auroral_boundary
+	from ssj_auroral_boundary import files
 	from spacepy import pycdf
-	path,filename = ssj_auroral_boundary.test_cdf_path_and_filename()
+	path,filename = files.test_cdf_path_and_filename()
 	with pycdf.CDF(os.path.join(path,filename)) as cdf:
 		print(cdf.attrs['Generated_by'])
 
