@@ -32,6 +32,7 @@ setup(name='ssj_auroral_boundary',
       packages=['ssj_auroral_boundary'],
       package_dir={'ssj_auroral_boundary' : 'ssj_auroral_boundary'},
       package_data={'ssj_auroral_boundary': ['test_data/*']},
+      scripts=['scripts/find_ssj_boundaries.py'],
       license='LICENSE.txt',
       zip_safe = False,
       classifiers = [

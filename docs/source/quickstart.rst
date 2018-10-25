@@ -35,7 +35,12 @@ Ways to generate boundaries
 ---------------------------
 
 Boundaries are most easily generated using the command line interface.
+After installing the package, a script called find_ssj_boundaries.py is added
+to your python path.
 
-To run the boundary identification algorithm using the test CDF file.
+You can run the boundary identification algorithm using the test CDF file:
 
+.. code:: bash
+	
+	>find_ssj_boundaries.py 16 2012 1 1 --test
 
