@@ -8,7 +8,7 @@
 # FOM: Figure of merit / Quality ( < 1.8 usually questionable)
 # ind: row of DMSP SSJ CDF file corresponding to boundary
 # hemisphere : -1 for southern hemisphere +1 for northern
-# UTSecond Pass Start,UTSecond Pass End,hemisphere,UTSec EQ1,UTSec PO1,UTSec PO2,UTSec EQ2,FOM,mlat EQ1,mlat PO1,mlat PO2,mlat EQ2,mlt EQ1,mlt PO1,mlt PO2,mlt EQ2
+UTSecond Pass Start,UTSecond Pass End,hemisphere,UTSec EQ1,UTSec PO1,UTSec PO2,UTSec EQ2,FOM,mlat EQ1,mlat PO1,mlat PO2,mlat EQ2,mlt EQ1,mlt PO1,mlt PO2,mlt EQ2
 9514,12563,1,10687,10816,11318,11496,3.480,65.541,70.908,72.781,65.474,16.890,16.147,9.942,8.778
 15706,18639,1,16905,16995,17491,17613,3.529,66.032,69.900,71.233,65.979,16.555,15.983,9.773,8.925
 28079,30886,1,29125,29326,29824,30020,2.846,62.096,71.643,69.340,59.553,17.413,16.157,9.670,8.689
