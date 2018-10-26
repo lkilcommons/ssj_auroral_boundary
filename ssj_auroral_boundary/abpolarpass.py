@@ -67,8 +67,6 @@ class abpolarpass(object):
 		Figure of Merit for the boundary identification.
 		None if boundary identification failed.
 	"""
-	from geospacepy import special_datetime, satplottools
-	
 	def __init__(self,satday,ind_pass_start,ind_pass_end):
 		"""Constructor for abpolarpass
 
@@ -82,7 +80,7 @@ class abpolarpass(object):
 		    Index of polar pass end in SSJ CDF
 		
 		"""
-		
+		from geospacepy import special_datetime, satplottools
 		self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
 		self.si = ind_pass_start # Index into satday's data
 		self.ei = ind_pass_end #Index into satday's data

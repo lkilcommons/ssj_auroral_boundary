@@ -67,8 +67,6 @@ class absatday(object):
 	polarpasses : list
 	    List of abpolarpass.abpolarpass obj for each polar crossing (half orbit)
 	"""
-	from geospacepy import special_datetime
-	from spacepy import pycdf
 	def __init__(self,cdffile,
 					imgdir=None,make_plot=True,plot_failed=False,
 					csvdir=None,writecsv=True):
@@ -92,6 +90,8 @@ class absatday(object):
 			If None looks for environment variable DMSP_DIR_ABCSV
 			If still fails raises RuntimeError
 		"""
+		from geospacepy import special_datetime
+		from spacepy import pycdf
 
 		self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
 		self.cdf = pycdf.CDF(cdffile)
