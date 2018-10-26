@@ -24,9 +24,64 @@ except:
 
 class abpolarpass(object):
 	"""A class for encapulating each spacecraft pass over the pole. 
-		Handles finding the boundaries for a single pass
+	Handles finding the boundaries for a single pass.
+
+	Some attributes are not documented, this abbreviated list shows those most
+	likely to be useful to a user not interested in modifying the code, i.e.
+	someone who wants to integrated the code into thier own application and
+	read boundaries directly from these objects instead of using output CSVs.
+
+	Implements __getitem__ interface to access any data marked with (from CDF)
+	in absatday.absatday docstring. Slices data from parent absatday as 
+	idx_pass_start:idx_pass_end (see constructor docstring).
+
+	Attributes
+	----------
+	satday : absatday.absatday
+		Parent absatday object 
+	failure_reason : str
+		Set to descriptive string of why boundary finding failed if it did fail,
+		otherwise, it is None if boundary finding succeeded	    
+	FLUX_MIN : float
+		Threshold that integrated flux must exceed continously for a span of
+		time to be defined as a auroral region candidate. For each such
+		continous above-threshold region, an absegment.absegment instance is
+		created.  
+	hemi : str,
+	    Single letter (N or S) hemisphere code
+	idx_pole_approach : int
+	    Index (relative to the start of the pass data) at which the spacecraft
+	    was closest to the pole
+	idx_equator1 : int
+		Index (relative to the start of the pass data) at which the spacecraft
+		first encounted the equatorward edge of the aurora. Set to
+		None if boundary idenficiation failed.
+	idx_pole1 : int
+		Index (as above) at which the spacecraft first exited the auroral oval
+		into the polar cap. None if boundary finding failed.
+	idx_pole2 : int
+		Index (as above) at which the spacecraft exited the polar cap and 
+		entered the aurora again. None if boundary finding failed.
+	idx_equator2 : int
+		Index (as above) where the spacecraft left the aurora, continuing on to 
+		subauroral latitudes. None if boundary finding failed.
+	max_fom : float
+		Figure of Merit for the boundary identification.
+		None if boundary identification failed.
 	"""
 	def __init__(self,satday,ind_pass_start,ind_pass_end):
+		"""Constructor for abpolarpass
+
+		Parameters
+		----------
+		satday : ssj_auroral_boundary.absatday.absatday
+		    Parent absatday object
+		ind_pass_start : int
+		    Index of polar pass start in SSJ CDF
+		ind_pass_end : int
+		    Index of polar pass end in SSJ CDF
+		
+		"""
 		
 		self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
 		self.si = ind_pass_start # Index into satday's data

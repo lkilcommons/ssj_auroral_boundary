@@ -10,17 +10,70 @@ from geospacepy import special_datetime
 from spacepy import pycdf
 
 from ssj_auroral_boundary import loggername
-from ssj_auroral_boundary.abpolarpass import abpolarpass
-from ssj_auroral_boundary.abcsv import abcsv
+from abpolarpass import abpolarpass
+from abcsv import abcsv
 
 class absatday(object):
 	"""Class for one satellite-day of SSJ data (one CDF file)
+	
+	Implements __getitem__ interface to access any data marked with (from CDF)
+	below.
+
+	Attributes
+	----------
+	cdffn : str
+	    Full file path to CDF file
+	satnum : int
+	    DMSP number from CDF
+	log : logging.logger  
+	    Logger for this instance
+	    Expects a root logger with name 'ssj_auroral_boundary'
+	    in the calling function, otherwise won't display anything
+	writecsv : bool
+	    Write out the CSV
+	csv : abcsv.abcsv
+	    Instance for adding lines to CSV
+	imgdir : str
+	    Path to write image files to if make_plot is True or plot_failed is True
+	    (see constructor for defualt behavior and fallbacks)
+	make_plot : bool
+	   	Plot successful passes
+	plot_failed : bool
+	    Also plot unsuccessful passes
+	cdf : pycdf.CDF
+	    Open CDF file
+	time : np.ndarray, shape=(86400,1)
+	    Timestamp of SSJ data as datetimes (Universal Time)
+	uts : np.ndarray, shape=(86400,1)
+	    Timestamp of SSJ data as Second of Day (Universal Time)
+	hod : np.ndarray, shape=(86400,1)
+	    Timestamp of SSJ data as Hour of Day (Universal Time)
+	mlat : np.ndarray, shape=(86400,1)
+		Magnetic latitude AACGM (NOAA CDF v1.1.2) / Apex (CU internal SSJ CDF)
+	mlt : np.ndarray, shape=(86400,1)
+	    Magnetic local time AACGM (NOAA CDF v1.1.2) / Apex (CU internal SSJ CDF)
+	counts : np.ndarray, shape=(86400,19)
+	    Detector counts for all SSJ channels (from CDF)
+	diff_flux : np.ndarray, shape=(86400,19)
+	    Differential electron energy energy flux (from CDF)
+	diff_flux_std : np.ndarray, shape=(86400,19)
+	    Relative error in differential electron energy flux (from CDF)
+	total_flux : np.ndarray, shape=(86400,1)
+	    Total energy flux intergrated across all 19 channels (from CDF)
+	total_flux_std : np.ndarray, shape=(86400,1)
+	    Relative error in total electron energy flux (from CDF)
+	channel_energies : np.ndarray, shape=(19,)
+	    Energy in electron volts (from CDF)
+	xings : list
+	    Indices into data arrays of equator crossings
+	polarpasses : list
+	    List of abpolarpass.abpolarpass obj for each polar crossing (half orbit)
 	"""
 
 	def __init__(self,cdffile,
 					imgdir=None,make_plot=True,plot_failed=False,
 					csvdir=None,writecsv=True):
-		"""Class for one satellite-day of SSJ data (one CDF file)
+		"""Constructor for absatday
 		
 		Parameters
 		----------
@@ -38,6 +91,7 @@ class absatday(object):
 		csvdir : str, optional
 			Directory to dump CSV files to (must exist)
 			If None looks for environment variable DMSP_DIR_ABCSV
+			If still fails raises RuntimeError
 		"""
 
 		self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
