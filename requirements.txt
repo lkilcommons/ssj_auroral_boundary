@@ -1,5 +1,2 @@
 numpy==1.14
 matplotlib>=1.4
-spacepy==0.1.5
-colorlog>=2.0
-git+git://github.com/lkilcommons/geospacepy-lite
