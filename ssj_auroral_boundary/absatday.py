@@ -6,8 +6,6 @@
 # University of Colorado, Boulder (CU Boulder)
 import numpy as np
 import logging,sys,datetime,os,traceback
-from geospacepy import special_datetime
-from spacepy import pycdf
 
 from ssj_auroral_boundary import loggername
 from abpolarpass import abpolarpass
@@ -69,7 +67,8 @@ class absatday(object):
 	polarpasses : list
 	    List of abpolarpass.abpolarpass obj for each polar crossing (half orbit)
 	"""
-
+	from geospacepy import special_datetime
+	from spacepy import pycdf
 	def __init__(self,cdffile,
 					imgdir=None,make_plot=True,plot_failed=False,
 					csvdir=None,writecsv=True):

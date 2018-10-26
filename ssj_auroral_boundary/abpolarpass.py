@@ -11,8 +11,6 @@ from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms
 import logging,sys,datetime,os,traceback
 
-from geospacepy import special_datetime, satplottools
-
 from ssj_auroral_boundary import loggername
 from ssj_auroral_boundary.absegment import absegment
 from ssj_auroral_boundary import dmsp_spectrogram
@@ -69,6 +67,8 @@ class abpolarpass(object):
 		Figure of Merit for the boundary identification.
 		None if boundary identification failed.
 	"""
+	from geospacepy import special_datetime, satplottools
+	
 	def __init__(self,satday,ind_pass_start,ind_pass_end):
 		"""Constructor for abpolarpass
 
