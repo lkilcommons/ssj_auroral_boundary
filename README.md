@@ -1,5 +1,9 @@
 # ssj_auroral_boundary
-Identify boundaries of the aurora with Defense Meteorology Satellite Program (DMSP) electron precipitation
+Identify boundaries of the aurora with Defense Meteorology Satellite Program (DMSP) electron precipitation.
+
+This code implements the auroral boundary identification technique described in:
+
+Kilcommons, L. M., Redmon, R. J., & Knipp, D. J. (2017). A New DMSP Magnetometer & Auroral Boundary Dataset and Estimates of Field Aligned Currents in Dynamic Auroral Boundary Coordinates. Journal of Geophysical Research: Space Physics, 2016JA023342. https://doi.org/10.1002/2016JA023342
 
 [![Documentation Status](https://readthedocs.org/projects/ssj-auroral-boundary/badge/?version=latest)](https://ssj-auroral-boundary.readthedocs.io/en/latest/?badge=latest)
 
