@@ -213,7 +213,7 @@ class abpolarpass(object):
         boundary_idxs = [self.idx_equator1, self.idx_pole1, self.idx_pole2,
                          self.idx_equator2]
         boundary_names = ['EQ1', 'PO1', 'PO2', 'EQ2']
-        boundary_colors = ['b', 'r', 'turquoise', 'm']
+        boundary_colors = ['b', 'r', 'm', 'deepskyblue']
         boundary_alignments = ['right', 'left', 'right', 'left']
         lw=1.5
         txtshift=5
@@ -244,7 +244,7 @@ class abpolarpass(object):
         descpc = "Polar Cap Width in Time %.1f sec, Boundary Set Score/FOM %.1f" % (self.segment2['uts'][0]-self.segment1['uts'][-1], self.max_fom)
         return desc1,desc2,descpc
 
-    def shade_boundary_canidates(self, ax, timevar='uts', color='turquoise',
+    def shade_boundary_canidates(self, ax, timevar='uts', color='slategrey',
                                  alpha=.2, fs=12):
         """ shade the boundary candidates
 
@@ -255,7 +255,7 @@ class abpolarpass(object):
         timevar : string
             Time variable (default='uts')
         color : string
-            Color name (default='turquoise')
+            Color name (default='m')
         alpha : float
             Alpha level, specifies transparency (default=0.2)
         fs : int
@@ -326,7 +326,7 @@ class abpolarpass(object):
 
         if self.segments is not None:
             for seg in self.segments:
-                a2.axvspan(seg['uts'][0], seg['uts'][-1], facecolor='turquoise',
+                a2.axvspan(seg['uts'][0], seg['uts'][-1], facecolor='m',
                            alpha=.2)
 
         a2.grid(True)
@@ -358,25 +358,25 @@ class abpolarpass(object):
             titlstr+='No 1st PWB,'
 
         if self.idx_pole2 is not None:
-            a.plot(X[self.idx_pole2], Y[self.idx_pole2], 'o', color='turquoise',
+            a.plot(X[self.idx_pole2], Y[self.idx_pole2], 'o', color='m',
                    alpha=.5)
-            a2.axvline(self['uts'][self.idx_pole2], color='turquoise',
+            a2.axvline(self['uts'][self.idx_pole2], color='m',
                        label='PO2', lw=lw)
-            a3.axvline(self['time'][self.idx_pole2], color='turquoise',
+            a3.axvline(self['time'][self.idx_pole2], color='m',
                        label='PO2', lw=lw)
             a.text(X[self.idx_pole2],Y [self.idx_pole2]-txtshift, "PO2",
-                   color='turquoise', horizontalalignment='left')
+                   color='m', horizontalalignment='left')
         else:
             titlstr+='No 2nd PWB,'
 
         if self.idx_equator2 is not None:
-            a.plot(X[self.idx_equator2], Y[self.idx_equator2], 'mo', alpha=.5)
-            a2.axvline(self['uts'][self.idx_equator2], color='m', label='EQ2',
+            a.plot(X[self.idx_equator2], Y[self.idx_equator2], 'o', color='deepskyblue', alpha=.5)
+            a2.axvline(self['uts'][self.idx_equator2], color='deepskyblue', label='EQ2',
                        lw=lw)
-            a3.axvline(self['time'][self.idx_equator2], color='m', label='EQ2',
+            a3.axvline(self['time'][self.idx_equator2], color='deepskyblue', label='EQ2',
                        lw=lw)
             a.text(X[self.idx_equator2], Y[self.idx_equator2]-txtshift, "EQ2",
-                   color='m', horizontalalignment='right')
+                   color='deepskyblue', horizontalalignment='right')
         else:
             titlstr+='No 2nd EQB,'
 
