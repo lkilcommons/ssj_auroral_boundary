@@ -4,7 +4,9 @@
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
+import os
 import numpy as np
+import logging
 import matplotlib as mpl
 
 # If not running interactively, run using the non-GUI backend.  Suppress
@@ -13,7 +15,6 @@ mpl.use('Agg', warn=False, force=False)
 
 from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms
-import logging,sys,datetime,os,traceback
 
 from ssj_auroral_boundary import loggername
 from ssj_auroral_boundary.absegment import absegment
