@@ -173,9 +173,11 @@ class abpolarpass(object):
         if self.intflux is not None and self.satday.make_plot:
             if self.failure_reason is None or self.satday.plot_failed:
                 f = self.plot()
-                self.figfile = os.path.splitext(os.path.split(self.satday.cdffn)[-1])[0] + \
-                '_{:s}pass_uts{:5d}_uts{:5d}.png'.format(self.hemi, \
-                        np.floor(self['uts'][0]), np.floor(self['uts'][-1]))
+                split_text = os.path.split(self.satday.cdffn)[-1]
+                self.figfile = os.path.splitext(split_text)[0] + \
+                '_{:s}pass_uts{:05.0f}_uts{:05.0f}.png'.format(self.hemi, \
+                                                np.floor(self['uts'][0][0]), \
+                                                np.floor(self['uts'][-1][0]))
                 self.figfile = os.path.join(self.satday.imgdir,self.figfile)
                 self.log.debug("Figure file is %s" % (self.figfile))
                 f.savefig(self.figfile, dpi=300.)
