@@ -315,7 +315,8 @@ class abpolarpass(object):
         a2.set_xlabel("UT Second of Day")
         a2.set_yscale('log')
         a2.axhline(self.FLUX_MIN,label='Threshold',color='grey')
-        a2.set_title("Integrated Flux (9 Highest E Channels %.2feV-%.2feV)" % (self['channel_energies'][0], self['channel_energies'][8]))
+        a2_title = "Integrated Flux (9 Highest E Channels %.2feV-%.2feV)" % (self['channel_energies'][0], self['channel_energies'][8])
+        a2.set_title(a2_title, fontsize="medium")
 
         dmsp_spectrogram.dmsp_spectrogram(self['time'], self['diff_flux'],
                                           self['channel_energies'],
@@ -396,7 +397,7 @@ class abpolarpass(object):
         if self.max_fom is not None:
             titlstr += 'Identification FOM ( < 1.8 is questionable ): %.2f' % (self.max_fom)
         
-        f.suptitle(titlstr)
+        f.suptitle(titlstr, fontsize="medium")
 
         #f.autofmt_xdate()
         f.tight_layout()
