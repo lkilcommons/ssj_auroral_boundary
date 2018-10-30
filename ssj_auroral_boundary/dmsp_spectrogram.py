@@ -10,7 +10,7 @@ import datetime as dt
 def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
                      fluxunits='eV/cm$^2$-s-sr-eV', logy=True, datalabel=None,
                      cblims=None, title=None, ax=None, ax_cb=None,
-                     label_it=True):
+                     label_it=True, color_map="Spectral_r"):
     """ Plot the DMSP spectrogram
 
     Parameters
@@ -122,7 +122,7 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
         z_max = cblims[1]
 
     #Set the over and under-range colors for the colorbar
-    cmap = cm.get_cmap('jet')
+    cmap = cm.get_cmap(color_map)
     cmap.set_bad('white',.1)
     cmap.set_over('black')
     cmap.set_under('grey')
