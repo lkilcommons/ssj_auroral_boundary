@@ -4,7 +4,6 @@
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
-import sys,datetime,os,requests
 
 def test_cdf_path_and_filename():
         """ Find location of test file
@@ -17,6 +16,7 @@ def test_cdf_path_and_filename():
             Test data filename
 
         """
+        import os
 
 	#Determine where this module's source file is located
 	#to determine where to look for the test data
@@ -75,6 +75,7 @@ def download_cdf_from_noaa(cdf_url, destination_cdffn):
         Void
 
         """
+        import requests
 
 	head = requests.head(cdf_url,allow_redirects=True)
 	headers = head.headers
