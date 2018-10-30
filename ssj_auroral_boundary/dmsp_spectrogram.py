@@ -3,21 +3,18 @@ Some simple code to make particle flux spectrograms with matplotlib
 @author: Liam M. Kilcommons
 		 (minor modifications R. Redmon)
 """
-import numpy,matplotlib
+import numpy as np
 import matplotlib.pyplot as pp
-import datetime
+import datetime as dt
 
-def dmsp_spectrogram( times, flux, channel_energies=None, lat=None, lt=None, fluxunits='eV/cm^2-s-sr-eV',
-				logy=True, datalabel=None, cblims=None, title=None, ax=None, ax_cb=None, label_it = True):
-	from matplotlib.colors import LogNorm #Module for logrithmic colorbar spacing
-	import matplotlib.dates as mpldates #Module for locating dates on the x axis
-	import matplotlib.cm as cm #Module for getting colormaps
-	import numpy.ma as ma
-	"""
+def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
+                     fluxunits='eV/cm^2-s-sr-eV', logy=True, datalabel=None,
+                     cblims=None, title=None, ax=None, ax_cb=None,
+                     label_it=True):
+	""" Plot the DMSP spectrogram
 
-	INPUTS:
-	-------
-
+	Parameters
+	----------
 	times : numpy.ndarray (dtype=object)(shape=(n,1))
 		Array of datetimes corresponding to the timestamps of the rows of the flux array
 
@@ -70,9 +67,15 @@ def dmsp_spectrogram( times, flux, channel_energies=None, lat=None, lt=None, flu
 		If 'ax' is specified then so should 'ax_cb'.
 
 	"""
+        #Module for logrithmic colorbar spacing
+	from matplotlib.colors import LogNorm
+        #Module for locating dates on the x axis
+	import matplotlib.dates as mpldates
+        #Module for getting colormaps
+	import matplotlib.cm as cm
 
 	if channel_energies is None:
-		channel_energies = numpy.array([ 30000.,  20400.,  13900.,   9450.,   6460.,   4400.,   3000.,
+		channel_energies = np.array([ 30000.,  20400.,  13900.,   9450.,   6460.,   4400.,   3000.,
 		 2040.,   1392.,    949.,    646.,    440.,    300.,    204.,
 		  139.,     95.,     65.,     44.,     30.])
 
@@ -86,10 +89,10 @@ def dmsp_spectrogram( times, flux, channel_energies=None, lat=None, lt=None, flu
 	else:
 		pass
 		#ax.set_title('Flux [%s]' % (fluxunits))
-	if isinstance(times,numpy.ndarray):	
+	if isinstance(times,np.ndarray):	
 		times = times.flatten()
 	
-	if isinstance(times[0],datetime.datetime):
+	if isinstance(times[0], dt.datetime):
 		mpl_times = mpldates.date2num(times)
 	else:
 		mpl_times = times
@@ -103,23 +106,23 @@ def dmsp_spectrogram( times, flux, channel_energies=None, lat=None, lt=None, flu
 	"""
 	# Hard coded start/end bins taken from SSDP; not sure how they are derived, though this does result
 	# in bins visually centered correctly on their central energies
-	bin_edges = numpy.logspace( numpy.log10(36340.), numpy.log10(24.76), len( channel_energies ) + 1 )    # add one for endpoint
-	T,CH_E = numpy.meshgrid( mpl_times, bin_edges )
+	bin_edges = np.logspace( np.log10(36340.), np.log10(24.76), len( channel_energies ) + 1 )    # add one for endpoint
+	T,CH_E = np.meshgrid( mpl_times, bin_edges )
 
 	# Infinite, and Negative fluxes => NaN
-	inds = numpy.nonzero( (~numpy.isfinite( flux )) | (flux < 0.) )
-	flux[inds]=numpy.nan
+	inds = np.nonzero( (~np.isfinite( flux )) | (flux < 0.) )
+	flux[inds]=np.nan
 
 	#Mask nan fluxes so that pcolor knows to use the cmap bad value
-	masked_flux = ma.masked_where(numpy.isnan(flux),flux)
+	masked_flux = np.ma.masked_where(np.isnan(flux),flux)
 
 	if cblims==None:
-		z_min, z_max = numpy.nanmin(flux), numpy.nanmax(flux)
+		z_min, z_max = np.nanmin(flux), np.nanmax(flux)
 	else:
 		z_min, z_max = cblims[0],cblims[1]
 
 	#Set the over and under-range colors for the colorbar
-	cmap = matplotlib.cm.get_cmap('jet')
+	cmap = cm.get_cmap('jet')
 	cmap.set_bad('white',.1)
 	cmap.set_over('black')
 	cmap.set_under('grey')
@@ -133,7 +136,7 @@ def dmsp_spectrogram( times, flux, channel_energies=None, lat=None, lt=None, flu
 		pp.colorbar(mappable,label=fluxunits,cax=ax_cb)
 		
 	# if Axis not specified then add x-axis tick marks
-	if label_it and isinstance(times[0],datetime.datetime):
+	if label_it and isinstance(times[0], dt.datetime):
 
 		plotwidth_h = (times[-1]-times[0]).total_seconds()/3600.
 		plotwidth_m = (times[-1]-times[0]).total_seconds()/60.
@@ -166,7 +169,7 @@ def dmsp_spectrogram( times, flux, channel_energies=None, lat=None, lt=None, flu
 
 		xlabels = []
 		for tick in xticks:
-			ind = numpy.nonzero(mpl_times==tick)[0] #Nonzero returns array ARG!
+			ind = np.nonzero(mpl_times==tick)[0] #Nonzero returns array ARG!
 			if len(ind)>0: #Sometimes tick is not found if it wants to tickmark outside of data range
 				#Have to put additional index to get datetime instead of array of length 1 with datetime in it
 				tickstr = "%.2d:%.2d" % (times[ind[0]].hour,times[ind[0]].minute)
