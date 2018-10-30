@@ -32,6 +32,6 @@ __all__ = ['absatday', 'abpolarpass', 'absegment', 'abcsv', 'files',
            'dmsp_spectrogram']
 
 try:
-    from ssj_auroral_boundary import __all__
+    from ssj_auroral_boundary import *
 except ImportError as err:
     print("problem importing {:s}: {:}".format(loggername, err))
