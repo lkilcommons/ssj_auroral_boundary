@@ -4,7 +4,9 @@
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
-import logging,sys,datetime,os,traceback
+import os
+import datetime as dt
+import logging
 
 class abcsv(object):
 	"""Class for writing satellite day of boundary identifications to CSV file
@@ -46,7 +48,7 @@ class abcsv(object):
 			cdffn = os.path.split(self.ssjcdffn)[-1]
 			header_lines = [
 				'DMSP SSJ Auroral Boundary Identification (%s)'%(cdffn),
-				'Generated on %s' % (datetime.datetime.now().strftime('%c')),
+				'Generated on %s' % (dt.datetime.now().strftime('%c')),
 				'Glossary:',
 				'EQ1: First equator-side auroral boundary ',
 				'PO1: First pole-side auroral boundary ',
