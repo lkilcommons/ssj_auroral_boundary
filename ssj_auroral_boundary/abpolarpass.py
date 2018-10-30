@@ -298,11 +298,12 @@ class abpolarpass(object):
         mappable = satplottools.hairplot(a, self['mlat'], self['mlt'],
                                          np.log10(self['intflux']), self.hemi,
                                          vmin=np.log10(self.FLUX_MIN), vmax=12)
-        f.colorbar(mappable,label='log10(Smoothed Integrated EEFlux)', ax=a)
+        f.colorbar(mappable,label='log$_{10}$(Smoothed Integrated EEFlux)',
+                   ax=a)
 
         titlstr = "%s\n" % (os.path.split(self.satday.cdffn)[1])
 
-        a.text(0,0,self.hemi)
+        a.text(0, 0, self.hemi)
         #def dmsp_spectrogram( times, flux, channel_energies, lat=None, lt=None, fluxunits='eV/cm^2-s-sr-eV',
         #        logy=True, datalabel=None, cblims=None, title=None, ax=None, ax_cb=None ):
         
@@ -383,8 +384,8 @@ class abpolarpass(object):
         if titlstr[-1]==',':
             titlstr = titlstr[:-1]+'\n' # Remove trailing comma, add newline
 
-        a.legend(ncol=2)
-        a2.legend(loc=0)
+        #a.legend(ncol=2, fontsize="medium")
+        a2.legend(loc=0, fontsize="medium")
 
         if self.failure_reason is not None:
             a.text(-40,-60,self.failure_reason,color='red')
@@ -392,7 +393,7 @@ class abpolarpass(object):
             desc = "Boundary 1: %.3f-%.3f, A: %.1e, RelUncertA: %.1f, A/A_max: %.3f, twidth: %.3fs\n" % (self['mlat'][self.idx_equator1], self['mlat'][self.idx_pole1], self.segment1.area,self.segment1.area_uncert,self.segment1.area/self.max_seg_area, self.segment1.twidth)
             desc += "Boundary 2: %.3f-%.3f,A: %.1e, RelUncertA: %.1f, A/A_max: %.3f, twidth: %.3fs\n" % (self['mlat'][self.idx_equator2],self['mlat'][self.idx_pole2], self.segment2.area,self.segment2.area_uncert,self.segment2.area/self.max_seg_area, self.segment2.twidth)
             desc += "Polar Cap Width in Time %.1f sec" % (self.segment2['uts'][0]-self.segment1['uts'][-1])
-            a.text(-40.,-60.,desc,color='blue')
+            a.text(-60.,-60.,desc,color='blue', fontsize="x-small")
 
         if self.max_fom is not None:
             titlstr += 'Identification FOM ( < 1.8 is questionable ): %.2f' % (self.max_fom)
@@ -400,8 +401,9 @@ class abpolarpass(object):
         f.suptitle(titlstr, fontsize="medium")
 
         #f.autofmt_xdate()
-        f.tight_layout()
-
+        #f.tight_layout()
+        f.subplots_adjust(top=.94, hspace=.3, left=.15)
+        
         return f
 
     def __str__(self):
