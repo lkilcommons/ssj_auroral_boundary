@@ -4,6 +4,15 @@
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
+""" file and downloading routines for DMSP data
+
+Routines
+--------
+test_cdf_path_and_filename : determine name and location of test file
+cdf_url_and_filename : build remote file URL and extract filename
+download_cdf_from_noaa : download remote file using url output
+
+"""
 
 def test_cdf_path_and_filename():
         """ Find location of test file
