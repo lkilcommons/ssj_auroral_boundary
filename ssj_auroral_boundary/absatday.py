@@ -4,8 +4,8 @@
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
-import numpy as np
-import logging,sys,datetime,os,traceback
+import os
+import logging
 
 from ssj_auroral_boundary import loggername
 from abpolarpass import abpolarpass
@@ -14,8 +14,8 @@ from abcsv import abcsv
 class absatday(object):
 	"""Class for one satellite-day of SSJ data (one CDF file)
 	
-	Implements __getitem__ interface to access any data marked with (from CDF)
-	below.
+	Implements __getitem__ interface to access any data marked with
+        (from CDF) below.
 
 	Attributes
 	----------
