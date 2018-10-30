@@ -1,7 +1,7 @@
 """
 Some simple code to make particle flux spectrograms with matplotlib
 @author: Liam M. Kilcommons
-		 (minor modifications R. Redmon)
+		 (minor modifications R. Redmon, A.G. Burrell)
 """
 import numpy as np
 import matplotlib.pyplot as pp
@@ -183,14 +183,16 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
                 #Sometimes tick is not found if it wants to tickmark outside of
                 # data range.  Have to put additional index to get datetime
                 # instead of array of length 1 with datetime in it
-                tickstr = "%.2d:%.2d" % (times[ind[0]].hour,times[ind[0]].minute)
+                tickstr = "%.2d:%.2d" % (times[ind[0]].hour,
+                                         times[ind[0]].minute)
                 if lat is not None:
                     tickstr+="\n%.2f" % (lat[ind])
                 if lt is not None:
                     tickstr+="\n%.2f" % (lt[ind])
                 xlabels.append(tickstr)
             else:
-                dtime = mpldates.num2date(tick) #Convert the tick position to a time
+                # Convert the tick position to a time
+                dtime = mpldates.num2date(tick)
                 xlabels.append('%.2d:%.2d' % (dtime.hour, dtime.minute))
 
         ax.set_xticklabels(xlabels)
