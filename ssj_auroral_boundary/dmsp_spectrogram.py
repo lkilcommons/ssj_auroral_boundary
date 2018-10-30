@@ -190,8 +190,8 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
                     tickstr+="\n%.2f" % (lt[ind])
                 xlabels.append(tickstr)
             else:
-                dt = mpldates.num2date(tick) #Convert the tick position to a time
-                xlabels.append('%.2d:%.2d' % (dt.hour,dt.minute))
+                dtime = mpldates.num2date(tick) #Convert the tick position to a time
+                xlabels.append('%.2d:%.2d' % (dtime.hour, dtime.minute))
 
         ax.set_xticklabels(xlabels)
 
