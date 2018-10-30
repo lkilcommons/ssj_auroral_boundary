@@ -11,9 +11,8 @@ import logging
 class abcsv(object):
     """Class for writing satellite day of boundary identifications to CSV file
     """
-    def __init__(self,csvdir,csvfn,ssjcdffn,
-                    csvvars=['mlat','mlt'],
-                    writecsv=True):
+    def __init__(self, csvdir, csvfn, ssjcdffn, csvvars=['mlat', 'mlt'],
+                 writecsv=True):
         """Write output CSV file
 
         Parameters
@@ -32,6 +31,7 @@ class abcsv(object):
         writecsv : bool
             Calls to add_auroral_boundary_to_csv actually modify a file or not
             Default (True)
+
         """
         self.csvfn = os.path.join(csvdir,csvfn)
         self.csvvars = csvvars
@@ -43,7 +43,7 @@ class abcsv(object):
     def write_header(self):
         #Write CSV file header
         
-        with open(self.csvfn,'w') as f:
+        with open(self.csvfn, 'w') as f:
             #Description
             cdffn = os.path.split(self.ssjcdffn)[-1]
             header_lines = [
@@ -97,11 +97,10 @@ class abcsv(object):
                         +"%d," % (int(abpp['uts'][abpp.idx_equator2]))
                         +"%.3f" % (abpp.max_fom))
                 for var in self.csvvars:
-                    line += ",%.3f,%.3f,%.3f,%.3f" % (
-                                                    abpp[var][abpp.idx_equator1],
-                                                    abpp[var][abpp.idx_pole1],
-                                                    abpp[var][abpp.idx_pole2],
-                                                    abpp[var][abpp.idx_equator2]
-                                                    )
+                    line += ",%.3f,%.3f,%.3f,%.3f" % ( \
+                                                abpp[var][abpp.idx_equator1], \
+                                                abpp[var][abpp.idx_pole1], \
+                                                abpp[var][abpp.idx_pole2], \
+                                                abpp[var][abpp.idx_equator2])
                 line += "\n"
                 f.write(line)
