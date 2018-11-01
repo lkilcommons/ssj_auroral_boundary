@@ -28,6 +28,10 @@ class abcsv(object):
             (i.e. if mlat, 4 columns will be added per row:
             (mlat of equatorward crossing 1, mlat of polar crossing 1, 
             mlat of polar crossing 2, mlat of equatorward crossing 2)
+            Options include mlat (magnetic apex latitude, unless log warning
+            notes that AACGM V1 was used), mlt (magnetic apex local time, unless
+            log warning notes that AACGM V1 was used), diff_flux, and any valid
+            CDF variable names (e.g., SC_GEOCENTRIC_LAT, SC_GEOCENTRIC_LON).
         writecsv : bool
             Calls to add_auroral_boundary_to_csv actually modify a file or not
             Default (True)
