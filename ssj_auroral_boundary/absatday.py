@@ -67,9 +67,8 @@ class absatday(object):
     polarpasses : list
         List of abpolarpass.abpolarpass obj for each polar crossing (half orbit)
     """
-    def __init__(self,cdffile,
-                    imgdir=None,make_plot=True,plot_failed=False,
-                    csvdir=None,writecsv=True):
+    def __init__(self, cdffile, imgdir=None, make_plot=True, plot_failed=False,
+                 csvdir=None, writecsv=True, csvvars=['mlat', 'mlt']):
         """Constructor for absatday
         
         Parameters
@@ -83,12 +82,16 @@ class absatday(object):
             Plot of each successful identification (the default is True)
         plot_failed : bool, optional
             Also plot unsuccesful passes (the default is False)
-        writecsv : bool, optional
-            Write a CSV file of boundary identifications (the default is True)
         csvdir : str, optional
             Directory to dump CSV files to (must exist)
             If None looks for environment variable DMSP_DIR_ABCSV
             If still fails raises RuntimeError
+        writecsv : bool, optional
+            Write a CSV file of boundary identifications (the default is True)
+        csvvars : list, optional
+            List of optional variables to include in each line of the CSV file.
+            See abcsv for more details.  (default=['mlat', 'mlt'])
+    
         """
         from geospacepy import special_datetime
         from spacepy import pycdf
@@ -99,9 +102,10 @@ class absatday(object):
         if 'dmsp' in cdffile:
             # Get the spacecraft number from the filename
             self.satnum = int(os.path.split(cdffile)[-1].split('dmsp-f')[-1][:2])
-            self.log.info("Satellite number determined to be %d" % (self.satnum))
+            self.log.info("Satellite number determined to be "
+                          + "{:d}".format(self.satnum))
         else:
-            raise RuntimeError(('Unexpected CDF filename %s, ' % (cdffile)
+            raise RuntimeError(('Unexpected CDF filename {:s}, '.format(cdffile)
                                +'could not parse out DMSP number' ))
         self.cdffn = cdffile
         self.make_plot = make_plot # Make plots of passes T/F
@@ -147,14 +151,15 @@ class absatday(object):
                                            + 'DMSP_DIR_ABIMG envvar')
         self.imgdir = imgdir
 
-        csvdir = self.if_none_use_envvar(csvdir,'DMSP_DIR_ABCSV')
+        csvdir = self.if_none_use_envvar(csvdir, 'DMSP_DIR_ABCSV')
         if csvdir is None:
             raise RuntimeError('No csv dir passed & no '
-                                           + 'DMSP_DIR_ABCSV envvar')
+                               + 'DMSP_DIR_ABCSV envvar')
         
         cdffn_noext = os.path.splitext(os.path.split(cdffile)[-1])[0]
-        csvfile = cdffn_noext+'_boundaries.csv'
-        self.csv = abcsv(csvdir,csvfile,cdffile,writecsv=self.writecsv)
+        csvfile = cdffn_noext + '_boundaries.csv'
+        self.csv = abcsv(csvdir, csvfile, cdffile, csvvars=csvvars,
+                         writecsv=self.writecsv)
 
         #Start processing the polar passes one by one
         for i in range(len(self.xings)-1):
@@ -183,13 +188,11 @@ class absatday(object):
             if latitude[k-1] < 0. and latitude[k] >= 0.:
                 entered_north.append(k)
                 self.log.info("Entered Northern Hemisphere: ind"
-                                              + ":%d,lat:%.3f" % (k,
-                                                                  latitude[k]))
+                              + ":%d,lat:%.3f" % (k, latitude[k]))
             elif latitude[k-1] > 0. and latitude[k] <= 0.:
                 entered_south.append(k)
                 self.log.info("Entered Southern Hemisphere: ind"
-                                              + ":%d,lat:%.3f" % (k,
-                                                                  latitude[k]))
+                              + ":%d,lat:%.3f" % (k, latitude[k]))
 
         xings = entered_north+entered_south
         xings.sort()
@@ -202,7 +205,6 @@ class absatday(object):
             return self.cdf[var][:]
         else:
             self.log.error(("Non-existent variable %s " % (str(var))
-                    + "requested through getattr. "
-                                        + "Returning None"))
+                            + "requested through getattr. Returning None"))
             return None
            
