@@ -11,6 +11,8 @@ from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms
 import logging,sys,datetime,os,traceback
 
+from geospacepy import special_datetime, satplottools
+
 from ssj_auroral_boundary import loggername
 from ssj_auroral_boundary.absegment import absegment
 from ssj_auroral_boundary import dmsp_spectrogram
@@ -80,7 +82,6 @@ class abpolarpass(object):
 		    Index of polar pass end in SSJ CDF
 		
 		"""
-		from geospacepy import special_datetime, satplottools
 		self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
 		self.si = ind_pass_start # Index into satday's data
 		self.ei = ind_pass_end #Index into satday's data
