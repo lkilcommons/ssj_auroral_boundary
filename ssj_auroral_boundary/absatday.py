@@ -8,7 +8,13 @@ import os
 import logging
 
 from geospacepy import special_datetime
-from spacepy import pycdf
+
+try:
+	from spacepy import pycdf
+except Exception as e:
+	print('Failed to import spacepy.pycdf; likely CDF C library was not found')
+	print('this is a fatal error unless you are building documentation')
+	print(e)
 
 from ssj_auroral_boundary import loggername
 from abpolarpass import abpolarpass

@@ -91,7 +91,6 @@ class abpolarpass(object):
             Index of polar pass end in SSJ CDF
         
         """
-        from geospacepy import special_datetime
         self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
         self.si = ind_pass_start # Index into satday's data
         self.ei = ind_pass_end #Index into satday's data
@@ -281,7 +280,6 @@ class abpolarpass(object):
     def plot(self):
         """ Draw a dialplot of the data
         """
-        from geospacepy import satplottools
         
         f = pp.figure(figsize=(8.5,11),dpi=300)
         a = f.add_subplot(3,1,1)
