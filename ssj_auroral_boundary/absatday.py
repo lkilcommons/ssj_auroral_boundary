@@ -7,6 +7,9 @@
 import os
 import logging
 
+from geospacepy import special_datetime
+from spacepy import pycdf
+
 from ssj_auroral_boundary import loggername
 from abpolarpass import abpolarpass
 from abcsv import abcsv
@@ -93,8 +96,6 @@ class absatday(object):
             See abcsv for more details.  (default=['mlat', 'mlt'])
     
         """
-        from geospacepy import special_datetime
-        from spacepy import pycdf
 
         self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
         self.cdf = pycdf.CDF(cdffile)

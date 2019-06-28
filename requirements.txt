@@ -1,2 +1,3 @@
 numpy==1.14
 matplotlib>=1.4
+-e git+git://github.com/lkilcommons/geospacepy-lite.git#egg=geospacepy
