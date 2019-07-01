@@ -152,8 +152,8 @@ time, magnetic latitude and magnetic local time.
 	('Sat May 29 03:11:36 2010', 65.473878712612631, 8.7777971568744455)
 
 
-Customizing the CSV contents
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Customizing CSV Contents
+++++++++++++++++++++++++
 
 It is also possible to customize what variables are written to the CSV.
 By default, the location of the boundaries is specified in magnetic latitude
