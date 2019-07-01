@@ -185,7 +185,7 @@ to specify the location in geocentric (geographic) coordinates instead:
 
 	csv_filename = absd.csv.csvfn
 	with open(csv_filename) as csvf:
-    	column_names = csvf.readlines()[10]
+		column_names = csvf.readlines()[10]
 		print(column_names.replace(',','\n'))
 
 
