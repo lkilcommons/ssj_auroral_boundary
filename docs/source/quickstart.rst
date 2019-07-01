@@ -152,3 +152,42 @@ time, magnetic latitude and magnetic local time.
 	('Sat May 29 03:11:36 2010', 65.473878712612631, 8.7777971568744455)
 
 
+Customizing the CSV contents
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It is also possible to customize what variables are written to the CSV.
+By default, the location of the boundaries is specified in magnetic latitude
+and magnetic local time in the CSV file. The following example shows how
+to specify the location in geocentric (geographic) coordinates instead:
+
+.. testcode::
+
+	import os
+	from ssj_auroral_boundary import files
+
+	path,filename = files.test_cdf_path_and_filename()
+	cdffn = os.path.join(path,filename)
+
+	from ssj_auroral_boundary.absatday import absatday
+
+	outdir = "/tmp"
+
+	#By default this would be ['mlat','mlt'], but can replace with
+	#any time-indexed 1D variable from the CDF file, for instance:
+	csvvars = ['SC_GEOCENTRIC_LAT','SC_GEOCENTRIC_LON']
+
+	absd = absatday(cdffn,
+					csvdir=outdir, 
+					imgdir=outdir,
+					make_plot=False,
+					writecsv=True,
+					csvvars=csvvars)
+
+	csv_filename = absd.csv.csvfn
+	with open(csv_filename) as csvf:
+    	print(csvf.readlines()[10])
+
+.. testoutput::
+
+	UTSecond Pass Start,UTSecond Pass End,hemisphere,UTSec EQ1,UTSec PO1,UTSec PO2,UTSec EQ2,FOM,SC_GEOCENTRIC_LAT EQ1,SC_GEOCENTRIC_LAT PO1,SC_GEOCENTRIC_LAT PO2,SC_GEOCENTRIC_LAT EQ2,SC_GEOCENTRIC_LON EQ1,SC_GEOCENTRIC_LON PO1,SC_GEOCENTRIC_LON PO2,SC_GEOCENTRIC_LON
+	
