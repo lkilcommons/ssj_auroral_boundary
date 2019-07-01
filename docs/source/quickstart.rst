@@ -185,9 +185,26 @@ to specify the location in geocentric (geographic) coordinates instead:
 
 	csv_filename = absd.csv.csvfn
 	with open(csv_filename) as csvf:
-    	print(csvf.readlines()[10])
+    	column_names = csvf.readlines()[10]
+    
+    print(column_names.replace(',','\n'))
 
 .. testoutput::
 
-	UTSecond Pass Start,UTSecond Pass End,hemisphere,UTSec EQ1,UTSec PO1,UTSec PO2,UTSec EQ2,FOM,SC_GEOCENTRIC_LAT EQ1,SC_GEOCENTRIC_LAT PO1,SC_GEOCENTRIC_LAT PO2,SC_GEOCENTRIC_LAT EQ2,SC_GEOCENTRIC_LON EQ1,SC_GEOCENTRIC_LON PO1,SC_GEOCENTRIC_LON PO2,SC_GEOCENTRIC_LON
+	UTSecond Pass Start
+	UTSecond Pass End
+	hemisphere
+	UTSec EQ1
+	UTSec PO1
+	UTSec PO2
+	UTSec EQ2
+	FOM
+	SC_GEOCENTRIC_LAT EQ1
+	SC_GEOCENTRIC_LAT PO1
+	SC_GEOCENTRIC_LAT PO2
+	SC_GEOCENTRIC_LAT EQ2
+	SC_GEOCENTRIC_LON EQ1
+	SC_GEOCENTRIC_LON PO1
+	SC_GEOCENTRIC_LON PO2
+	SC_GEOCENTRIC_LON EQ2
 	
