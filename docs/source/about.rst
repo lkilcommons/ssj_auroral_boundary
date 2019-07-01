@@ -15,6 +15,7 @@ Output
 * Comma Seperated Value (CSV) text file
 * One file per spacecraft, per day
 * Universal Time, Magnetic Latitude, Magnetic Local Time for each boundary
+* CSV output variables are customizable (see quickstart guide)
 * :download:`Sample CSV <_static/sample_output.csv>`
 
 Graphics
