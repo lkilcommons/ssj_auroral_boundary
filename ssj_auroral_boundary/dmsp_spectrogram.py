@@ -1,7 +1,7 @@
 """
 Some simple code to make particle flux spectrograms with matplotlib
 @author: Liam M. Kilcommons
-		 (minor modifications R. Redmon, A.G. Burrell)
+         (minor modifications R. Redmon, A.G. Burrell)
 """
 import numpy as np
 import matplotlib.pyplot as pp
@@ -21,7 +21,7 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
     flux : numpy.ndarray (shape=(n,len(channel_energies)))
         Array of fluxes, 1 per channel, per timestamp
     channel_energies - numpy.ndarray
-        Array of particle detector channel center energies in eV, if 
+        Array of particle detector channel center energies in eV, if
         None uses default DMSP energies
         channel_energies = [ 30000.,  20400.,  13900.,   9450.,   6460.,
                               4400.,   3000.,   2040.,   1392.,    949.,
@@ -82,9 +82,9 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
     else:
         pass
         #ax.set_title('Flux [%s]' % (fluxunits))
-    if isinstance(times,np.ndarray):    
+    if isinstance(times,np.ndarray):
         times = times.flatten()
-    
+
     if isinstance(times[0], dt.datetime):
         mpl_times = mpldates.date2num(times)
     else:
@@ -135,7 +135,7 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
         pp.colorbar(mappable,label=fluxunits,ax=ax)
     else:
         pp.colorbar(mappable,label=fluxunits,cax=ax_cb)
-        
+
     # if Axis not specified then add x-axis tick marks
     if label_it and isinstance(times[0], dt.datetime):
 

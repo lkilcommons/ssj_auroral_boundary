@@ -1,6 +1,6 @@
 # Copyright 2018 SEDA Group at CU Boulder
-# Created by: 
-# Liam Kilcommons 
+# Created by:
+# Liam Kilcommons
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
@@ -26,7 +26,7 @@ class abcsv(object):
         csvvars : list
             List of variables to write on each line, for each boundary
             (i.e. if mlat, 4 columns will be added per row:
-            (mlat of equatorward crossing 1, mlat of polar crossing 1, 
+            (mlat of equatorward crossing 1, mlat of polar crossing 1,
             mlat of polar crossing 2, mlat of equatorward crossing 2)
             Options include mlat (magnetic apex latitude, unless log warning
             notes that AACGM V1 was used), mlt (magnetic apex local time, unless
@@ -46,7 +46,7 @@ class abcsv(object):
 
     def write_header(self):
         #Write CSV file header
-        
+
         with open(self.csvfn, 'w') as f:
             #Description
             cdffn = os.path.split(self.ssjcdffn)[-1]
@@ -76,7 +76,7 @@ class abcsv(object):
             #Optional columns defined in self.csvvars
             for var in self.csvvars:
                 for bnd in ['EQ1','PO1','PO2','EQ2']:
-                    colnames+="%s %s," % (var,bnd) 
+                    colnames+="%s %s," % (var,bnd)
             colnames = colnames[:-1] # remove leftover comma
             colnames += '\n' # add newline
             f.write(colnames)
@@ -88,7 +88,7 @@ class abcsv(object):
         ----------
         abpp : abpolarpass
             Polar pass object (successful boundary identification)
-        
+
         """
         if self.writecsv:
             hemicode = 1 if abpp.hemi=='N' else -1
@@ -97,7 +97,7 @@ class abcsv(object):
                         +"%d," % (hemicode)
                         +"%d," % (int(abpp['uts'][abpp.idx_equator1]))
                         +"%d," % (int(abpp['uts'][abpp.idx_pole1]))
-                        +"%d," % (int(abpp['uts'][abpp.idx_pole2])) 
+                        +"%d," % (int(abpp['uts'][abpp.idx_pole2]))
                         +"%d," % (int(abpp['uts'][abpp.idx_equator2]))
                         +"%.3f" % (abpp.max_fom))
                 for var in self.csvvars:

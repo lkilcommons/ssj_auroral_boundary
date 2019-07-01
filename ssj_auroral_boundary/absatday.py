@@ -1,6 +1,6 @@
 # Copyright 2018 SEDA Group at CU Boulder
-# Created by: 
-# Liam Kilcommons 
+# Created by:
+# Liam Kilcommons
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
@@ -10,11 +10,11 @@ import logging
 from geospacepy import special_datetime
 
 try:
-	from spacepy import pycdf
+    from spacepy import pycdf
 except Exception as e:
-	print('Failed to import spacepy.pycdf; likely CDF C library was not found')
-	print('this is a fatal error unless you are building documentation')
-	print(e)
+    print('Failed to import spacepy.pycdf; likely CDF C library was not found')
+    print('this is a fatal error unless you are building documentation')
+    print(e)
 
 from ssj_auroral_boundary import loggername
 from abpolarpass import abpolarpass
@@ -22,7 +22,7 @@ from abcsv import abcsv
 
 class absatday(object):
     """Class for one satellite-day of SSJ data (one CDF file)
-    
+
     Implements __getitem__ interface to access any data marked with
         (from CDF) below.
 
@@ -32,7 +32,7 @@ class absatday(object):
         Full file path to CDF file
     satnum : int
         DMSP number from CDF
-    log : logging.logger  
+    log : logging.logger
         Logger for this instance
         Expects a root logger with name 'ssj_auroral_boundary'
         in the calling function, otherwise won't display anything
@@ -79,7 +79,7 @@ class absatday(object):
     def __init__(self, cdffile, imgdir=None, make_plot=True, plot_failed=False,
                  csvdir=None, writecsv=True, csvvars=['mlat', 'mlt']):
         """Constructor for absatday
-        
+
         Parameters
         ----------
         cdffile : str
@@ -100,7 +100,7 @@ class absatday(object):
         csvvars : list, optional
             List of optional variables to include in each line of the CSV file.
             See abcsv for more details.  (default=['mlat', 'mlt'])
-    
+
         """
 
         self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
@@ -144,13 +144,13 @@ class absatday(object):
                        + 'time variables in CDF file. Falling '
                        +'back to AACGM magnetic coordinates'))
             latvar,ltvar = 'SC_AACGM_LAT','SC_AACGM_LTIME'
-             
+
         self.mlat = self.cdf[latvar][:]
         self.mlt = self.cdf[ltvar][:]
         self.channel_energies = self.cdf['CHANNEL_ENERGIES'][:]
         self.xings = self.simple_passes(self.mlat)
         self.polarpasses = []
-        
+
         #Look for environemnt variables to define paths if no paths provided
         imgdir = self.if_none_use_envvar(imgdir,'DMSP_DIR_ABIMG')
         if imgdir is None:
@@ -162,7 +162,7 @@ class absatday(object):
         if csvdir is None:
             raise RuntimeError('No csv dir passed & no '
                                + 'DMSP_DIR_ABCSV envvar')
-        
+
         cdffn_noext = os.path.splitext(os.path.split(cdffile)[-1])[0]
         csvfile = cdffn_noext + '_boundaries.csv'
         self.csv = abcsv(csvdir, csvfile, cdffile, csvvars=csvvars,
@@ -189,7 +189,7 @@ class absatday(object):
         npts = len(latitude.flatten())
         entered_north = []
         entered_south = []
-        
+
         for k in range(1,npts):
             #poleward crossing
             if latitude[k-1] < 0. and latitude[k] >= 0.:
@@ -214,4 +214,4 @@ class absatday(object):
             self.log.error(("Non-existent variable %s " % (str(var))
                             + "requested through getattr. Returning None"))
             return None
-           
+

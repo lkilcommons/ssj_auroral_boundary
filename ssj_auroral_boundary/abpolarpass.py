@@ -1,6 +1,6 @@
 # Copyright 2018 SEDA Group at CU Boulder
-# Created by: 
-# Liam Kilcommons 
+# Created by:
+# Liam Kilcommons
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
@@ -33,15 +33,15 @@ class abpolarpass(object):
     Attributes
     ----------
     satday : absatday.absatday
-        Parent absatday object 
+        Parent absatday object
     failure_reason : str
         Set to descriptive string of why boundary finding failed if it did fail,
-        otherwise, it is None if boundary finding succeeded        
+        otherwise, it is None if boundary finding succeeded
     FLUX_MIN : float
         Threshold that integrated flux must exceed continously for a span of
         time to be defined as a auroral region candidate. For each such
         continous above-threshold region, an absegment.absegment instance is
-        created.  
+        created.
     hemi : str,
         Single letter (N or S) hemisphere code
     idx_pole_approach : int
@@ -55,17 +55,17 @@ class abpolarpass(object):
         Index (as above) at which the spacecraft first exited the auroral oval
         into the polar cap. None if boundary finding failed.
     idx_pole2 : int
-        Index (as above) at which the spacecraft exited the polar cap and 
+        Index (as above) at which the spacecraft exited the polar cap and
         entered the aurora again. None if boundary finding failed.
     idx_equator2 : int
-        Index (as above) where the spacecraft left the aurora, continuing on to 
+        Index (as above) where the spacecraft left the aurora, continuing on to
         subauroral latitudes. None if boundary finding failed.
     max_fom : float
         Figure of Merit for the boundary identification.
         None if boundary identification failed.
 
     Notes
-    ----- 
+    -----
     Handles finding the boundaries for a single pass.
 
     Some attributes are not documented, this abbreviated list shows those most
@@ -74,7 +74,7 @@ class abpolarpass(object):
     read boundaries directly from these objects instead of using output CSVs.
 
     Implements __getitem__ interface to access any data marked with (from CDF)
-    in absatday.absatday docstring. Slices data from parent absatday as 
+    in absatday.absatday docstring. Slices data from parent absatday as
     idx_pass_start:idx_pass_end (see constructor docstring).
 
     """
@@ -89,27 +89,27 @@ class abpolarpass(object):
             Index of polar pass start in SSJ CDF
         ind_pass_end : int
             Index of polar pass end in SSJ CDF
-        
+
         """
         self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
         self.si = ind_pass_start # Index into satday's data
         self.ei = ind_pass_end #Index into satday's data
         self.satday = satday # Parent spacecraft day of data
-        
+
         self.hemi = 'N' if np.nanmean(self['mlat'])>1 else 'S'
         self.idx_pole_approach = np.argmax(np.abs(self['mlat']))
-        
+
         #Boundary Finding Settings
         self.MAX_DATA_GAP = 60 #Max number of missing seconds in top 9 channels
         #self.FLUX_MIN = 10**6.5 # Original (possibly appropriate for J4?)
-        self.FLUX_MIN = 10**9  
+        self.FLUX_MIN = 10**9
         self.MIN_IND_GAP = 5     # min # of samples between individial segments
         self.MIN_SAMPLES = 45    # min # samples within a peak, 1 sample = 1 sec
         self.MIN_LAT     = 50.   # start search
-        self.MIN_DT      = 120.  # min sec between end of peak[n] and start of 
+        self.MIN_DT      = 120.  # min sec between end of peak[n] and start of
                             #peak[n+1].  (smaller than this is a skimmer pass)
-        self.MIN_DT_AREA = 30.   # minimum seconds of an area.  
-                            #(smaller than this should be ignored) 
+        self.MIN_DT_AREA = 30.   # minimum seconds of an area.
+                            #(smaller than this should be ignored)
         self.MIN_EQ_SPIKE_DT = 30. # used for selecting equatorward edge of the auroral zone
 
         #Define empty versions of everything
@@ -122,7 +122,7 @@ class abpolarpass(object):
         #Step 2: Find Segments
         self.segments = None
         self.max_seg_area = None
-        
+
         #Step 3: Compare Segments and Compute Figure of Merit
         self.foms = None
         self.combos = None
@@ -135,7 +135,7 @@ class abpolarpass(object):
         self.idx_equator1 = None
         self.idx_pole2 = None
         self.idx_equator2 = None
-        
+
         # This is set in the methods then read in the plot method
         self.failure_reason = None
 
@@ -145,7 +145,7 @@ class abpolarpass(object):
          self.longest_strech_missing) = self.prepare_flux_data()
 
         if self.intflux is not None:
-            #Find the segments        
+            #Find the segments
             self.segments,self.max_seg_area = self.find_segments()
 
             #Compare the segments and compute the figure of merit for each
@@ -166,10 +166,10 @@ class abpolarpass(object):
                 self.log.error("Segment finding was aborted (returned None). "
                                + "Pass processing for "
                                + "%s is discontinued" % (str(self)))
-                
+
         else:
             self.log.error("Failed to integrate flux...too many missing values")
-            
+
 
         if self.intflux is not None and self.satday.make_plot:
             if self.failure_reason is None or self.satday.plot_failed:
@@ -183,13 +183,13 @@ class abpolarpass(object):
                 self.log.debug("Figure file is %s" % (self.figfile))
                 f.savefig(self.figfile, dpi=300.)
                 pp.close(f)
-        
+
         boundary_indices = [self.idx_equator1,
                             self.idx_pole1,
                             self.idx_pole2,
                             self.idx_equator2]
 
-        if self.failure_reason is None and None not in boundary_indices: 
+        if self.failure_reason is None and None not in boundary_indices:
             self.satday.csv.add_auroral_boundary_to_csv(self)
 
     def draw_boundary_vlines(self,ax,timevar='uts',inplace_label=True):
@@ -267,7 +267,7 @@ class abpolarpass(object):
         Void
 
         """
-                                                         
+
         mtrans = mtransforms.blended_transform_factory(ax.transData,
                                                        ax.transAxes)
         if self.segments is not None:
@@ -280,12 +280,12 @@ class abpolarpass(object):
     def plot(self):
         """ Draw a dialplot of the data
         """
-        
+
         f = pp.figure(figsize=(8.5,11),dpi=300)
         a = f.add_subplot(3,1,1)
         a2 = f.add_subplot(3,1,2)
         a3 = f.add_subplot(3,1,3)
-        
+
         iflx = self['intflux']
         iflx[iflx==0.] = .1
 
@@ -306,13 +306,13 @@ class abpolarpass(object):
         a.text(0, 0, self.hemi)
         #def dmsp_spectrogram( times, flux, channel_energies, lat=None, lt=None, fluxunits='eV/cm^2-s-sr-eV',
         #        logy=True, datalabel=None, cblims=None, title=None, ax=None, ax_cb=None ):
-        
+
         fluxstd = self.moving_average(self['total_flux_std'],15)
         a2.plot(self['uts'], self['intflux'],'k.',
                 label='Smoothed Int >1KeV Flx', ms=5.)
         a2.plot(self['uts'], fluxstd, 'r.', ms=3, label='Relative Uncertainty')
         #a2.axhline(np.nanmean(fluxstd)-.5*np.nanstd(fluxstd),label='Mean Uncertainty',color='orange')
-        #a2.plot(self['uts'],self['intflux']-3*self['intflux']*fluxstd,'g.',ms=5,label='3*std lower bound')                
+        #a2.plot(self['uts'],self['intflux']-3*self['intflux']*fluxstd,'g.',ms=5,label='3*std lower bound')
         a2.set_xlabel("UT Second of Day")
         a2.set_yscale('log')
         a2.axhline(self.FLUX_MIN,label='Threshold',color='grey')
@@ -323,7 +323,7 @@ class abpolarpass(object):
                                           self['channel_energies'],
                                           lat=self['mlat'], lt=self['mlt'],
                                           ax=a3, cblims=[1e5,1e10])
-        #a3.set_ylim([1e2,1e5])    
+        #a3.set_ylim([1e2,1e5])
 
         if self.segments is not None:
             for seg in self.segments:
@@ -397,13 +397,13 @@ class abpolarpass(object):
 
         if self.max_fom is not None:
             titlstr += 'Identification FOM ( < 1.8 is questionable ): %.2f' % (self.max_fom)
-        
+
         f.suptitle(titlstr, fontsize="medium")
 
         #f.autofmt_xdate()
         #f.tight_layout()
         f.subplots_adjust(top=.94, hspace=.3, left=.15)
-        
+
         return f
 
     def __str__(self):
@@ -447,7 +447,7 @@ class abpolarpass(object):
             total_missing_samples += len(badinds[c])
             #Find the largest difference in time between good values
             if len(badinds[c])>1:
-                longest_strech_missing = longest_strech_missing if longest_strech_missing > np.nanmax(np.diff(badinds[c])) else np.nanmax(np.diff(badinds[c]))  
+                longest_strech_missing = longest_strech_missing if longest_strech_missing > np.nanmax(np.diff(badinds[c])) else np.nanmax(np.diff(badinds[c]))
 
         ngaps_unacceptable = all(channel_gaps_unacceptable)
         if ngaps_unacceptable:
@@ -461,7 +461,7 @@ class abpolarpass(object):
         intflux_notsmooth = self.flux_integrate(self['diff_flux'],self['channel_energies'])
         #Integrate the uncertainty
         #intflux_std_notsmooth = self.std_integrate(self['diff_flux_std'],self['channel_energies'])
-        
+
         self.log.debug("In prepare_flux_data, shape intflux is %s" % (str(intflux_notsmooth.shape)))
         #Fail if there aren't enough points to smooth
         if len(intflux_notsmooth) < 15:
@@ -485,7 +485,7 @@ class abpolarpass(object):
         where s represents uncertainty
         JE is integrated flux
         je_i is differential flux of i-th SSJ channel
-        and the SUM runs over i in 0 (30KeV) to 8(1.392 KeV) 
+        and the SUM runs over i in 0 (30KeV) to 8(1.392 KeV)
         """
         c = energies.copy()
 
@@ -494,7 +494,7 @@ class abpolarpass(object):
         for ch in range(len(nantozero_std[0,:])):
             bad = np.logical_not(np.isfinite(nantozero_std[:,ch]))
             neg = nantozero_std[:,ch]<0.
-            
+
             nantozero_std[np.logical_or(bad,neg),ch] = 0.
 
         #Integrate
@@ -524,7 +524,7 @@ class abpolarpass(object):
         for ch in range(len(nantozero_flux[0,:])):
             bad = np.logical_not(np.isfinite(nantozero_flux[:,ch]))
             neg = nantozero_flux[:,ch]<0.
-            
+
             nantozero_flux[np.logical_or(bad,neg),ch] = 0.
 
         #Integrate
@@ -537,7 +537,7 @@ class abpolarpass(object):
                             1./2*(c[5] - c[7])*nantozero_flux[:,6] +\
                             1./2*(c[6] - c[8])*nantozero_flux[:,7] +\
                                  (c[7] - c[8])*nantozero_flux[:,8]
-        
+
         return flux_integrated
 
     def rolling_window(self,a, window):
@@ -554,7 +554,7 @@ class abpolarpass(object):
         lat = self['mlat']
         mlt = self['mlt']
         intflux = self['intflux']
-        stdflux = self.moving_average(self['total_flux_std'],15) # Smoothed 
+        stdflux = self.moving_average(self['total_flux_std'],15) # Smoothed
         #lowerbndflux = intflux - 3*stdflux*intflux #3std lower bound
 
         #self.log.debug('In find_segments intflux.shape is %s, lat.shape is %s ' % (str(intflux.shape),str(lat.shape)))
@@ -563,14 +563,14 @@ class abpolarpass(object):
         idx_crosses = np.flatnonzero( np.logical_and( abovethresh, np.abs(lat) > self.MIN_LAT ) )
 
         #self.log.debug('\nidx_crosses: %s\n' % (str(idx_crosses)))
- 
+
         # Not enough flux > threshold => SKIP
         if len(idx_crosses) < self.MIN_SAMPLES:
             self.log.info("not enough points %d > threshold %d => SKIPPING" % (len(idx_crosses),self.MIN_SAMPLES))
             self.failure_reason = "Number of points with above threshold flux (%d found < %d minimum)" % (len(idx_crosses),self.MIN_SAMPLES)
             return None,None
-    
-        # Determine the end of each segment by differencing the indices and seeing when the adjacent flux 
+
+        # Determine the end of each segment by differencing the indices and seeing when the adjacent flux
         # over threshold are more than 1 time step apart
         # each region of continuous 'over-threshold' fluxes is henceforth called a segment
         deltaflux = np.abs( np.diff(idx_crosses) )
@@ -584,7 +584,7 @@ class abpolarpass(object):
 
         self.log.debug('\nidx_segment_starts: %s\n' % (str(idx_segment_starts)))
         self.log.debug('\nidx_segment_ends: %s\n' % (str(idx_segment_ends)))
- 
+
         # Fail because not enough segments found
         if n_segments <= 2:
             self.log.info("not enough above threshold intervals greater than %d points wide" % (self.MIN_IND_GAP))
@@ -597,14 +597,14 @@ class abpolarpass(object):
             idx_segment_starts = idx_segment_starts[ 1:n_segments ]
             idx_segment_ends   = idx_segment_ends[   1:n_segments ]
             n_segments -= 1
-        
+
         # Remove segments that end at the last latitude of the search
         if idx_crosses[ idx_segment_ends[-1] ] == idx_pass[-1]:
             self.log.info("last segment ends at last latitude of search => REMOVING")
             idx_segment_starts = idx_segment_starts[ 0:n_segments - 1 ]
             idx_segment_ends   = idx_segment_ends[   0:n_segments - 1 ]
             n_segments -= 1
-        
+
         # Remove segments that have the same start and end, or end = start+1 (length 1 segments)
         # This has to be an iterative process because the indices change each time we resize the idx arrays
         lenzerosegs = np.flatnonzero(idx_segment_starts==idx_segment_ends)
@@ -615,7 +615,7 @@ class abpolarpass(object):
             idx_segment_ends = np.concatenate(  (idx_segment_ends[ :ind ], idx_segment_ends[ ind+1: ] ) )
             n_segments -= 1
             lenzerosegs = np.flatnonzero(idx_segment_starts==idx_segment_ends)
-            
+
         # Added because of F12199711070203.J4
 
         # 1 Segment skimmer passes => Skip
@@ -623,19 +623,19 @@ class abpolarpass(object):
             self.log.error("only found one segment => SKIPPING")
             self.failure_reason = "Only one region of above threshold flux (unibrow)"
             return None,None
-        
+
         # "unibrow" skimmer pass (i.e. humps too close together) => Skip
         if np.max( deltaflux ) < self.MIN_DT :
             self.log.error("skimmer pass => SKIPPING")
-            self.failure_reason = "Regions of above threshold flux too close.\n(dt: %.1f < %.1f) (borderline unibrow)" % (np.max(deltaflux),self.MIN_DT) 
+            self.failure_reason = "Regions of above threshold flux too close.\n(dt: %.1f < %.1f) (borderline unibrow)" % (np.max(deltaflux),self.MIN_DT)
             return None,None
-        
+
         #If we got this far we can turn self.segments into something other than None
         #Nope moved to a pass-back sort of paradigm
-        
+
         segments = []
         max_seg_area = 0.
-        for k in range(n_segments):    
+        for k in range(n_segments):
             si,ei = idx_crosses[idx_segment_starts[k]],idx_crosses[idx_segment_ends[k]]
             self.log.debug("Now processing segment %d: idx_segment_starts = %d, idx_segment_ends = %d" % (k,si,ei))
             segments.append(absegment(self,si,ei))
@@ -645,7 +645,7 @@ class abpolarpass(object):
             if max_seg_area < new_max_seg_area:
                 self.log.debug("Segment %d: New maximum total flux (area, used in FOM determination) : %.3g" % (k,max_seg_area))
                 max_seg_area = new_max_seg_area
-            
+
         return segments,max_seg_area
 
     def compare_segments(self):
@@ -654,20 +654,20 @@ class abpolarpass(object):
         """
         combos = []
         foms = []
-        
+
         #Edge case: only one segment identified, so can't compare
         if len(self.segments)==1:
             fom_failure_reason = 'Only one segment found, so could not compare'
-            
+
         for s1_ind,s1 in enumerate(self.segments):
             for k,s2 in enumerate(self.segments[s1_ind+1:]):
                 s2_ind = s1_ind+1+k #Actual index in segments of s2
                 #Time from poleward edge (end) of ascending to poleward edge (beginning) of descending
-                inside_twidth = s2['uts'][0]-s1['uts'][-1] 
+                inside_twidth = s2['uts'][0]-s1['uts'][-1]
                 #Require that both segements are wider than a tuning parameter
                 #This prevents isolated spikes that maximize the fom because they are low latitude
                 #From being picked
-                if s1.twidth < self.MIN_DT_AREA or s2.twidth < self.MIN_DT_AREA: 
+                if s1.twidth < self.MIN_DT_AREA or s2.twidth < self.MIN_DT_AREA:
                     fom = np.nan
                     fom_failure_reason = "Areas are too short < %s " % (str(self.MIN_DT_AREA))
                 #Require that the two segments to be compared have the maximum latitude point between them
@@ -689,7 +689,7 @@ class abpolarpass(object):
 
         foms = np.array(foms)
         if len(foms)>0:
-            max_fom = np.nanmax(foms) 
+            max_fom = np.nanmax(foms)
             max_fom_ind = np.flatnonzero(foms==max_fom)[0]
             self.log.info("Max fom was %.3f, matching combo of segments %d and %d" % (max_fom,combos[max_fom_ind][0],combos[max_fom_ind][1]))
         else:
@@ -697,7 +697,7 @@ class abpolarpass(object):
             max_fom_ind = None
             self.failure_reason = 'No Valid Comparisons (b/c %s)' % (fom_failure_reason)
             self.log.warn("No non-nan FOMs found! Means %s" % (fom_failure_reason))
-        
+
         return foms,combos,max_fom,max_fom_ind
 
     def get_boundaries(self):
@@ -715,10 +715,10 @@ class abpolarpass(object):
 
         segpole1 = self.segments[pole1segnum]
         segpole2 = self.segments[pole2segnum]
-        
+
         #Area1 => Ascending phase
         # pick eq1 ignoring very narrow spikes
-        
+
         #Start by assuming that the equatorward boundary is
         # simply the start of the segment for which we found the first poleward
         # boundary. If we don't find anything better equatorward of that we
@@ -729,21 +729,21 @@ class abpolarpass(object):
             if(seg.twidth >= self.MIN_EQ_SPIKE_DT and
                seg.area_uncert < np.nanmean(self['total_flux_std'])):
                 #if meets time requirement, define as boundary
-                idx_equator1 = seg.si     
+                idx_equator1 = seg.si
                 break
 
         if idx_equator1 is None:
             self.log.warn('No 1st equatorward boundary found satisfying delta-t > %s' % (str(self.MIN_EQ_SPIKE_DT)))
-            
-        
+
+
         idx_pole1 = segpole1.ei
         self.log.info("First poleward boundary at segment #%d:%s" % (pole1segnum,str(segpole1)))
 
         #Area2 => Descending phase
-        
+
         idx_pole2 = segpole2.si
         self.log.info("Second poleward boundary at segment #%d:%s" % (pole2segnum,str(segpole2)))
-        
+
         #Start by assuming that the equatorward boundary is
         # simply the end of the segment for which we found the second poleward
         # boundary.  If we don't find anything better equatorward of that we
@@ -760,6 +760,6 @@ class abpolarpass(object):
         if idx_equator2 is None:
             self.log.warn('No 2nd equatorward boundary found satisfying delta-t > %s' % (str(self.MIN_EQ_SPIKE_DT)))
 
-        
+
         return(idx_pole1, idx_equator1, idx_pole2, idx_equator2, segpole1,
                segpole2)
