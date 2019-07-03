@@ -6,8 +6,8 @@ Identify boundaries of the aurora with Defense Meteorology Satellite Program (DM
 
 ## How to cite
 
-Cite the Zenodo DOI (above) for the code
-Cite the paper (below) for the algorithm
+* Cite the Zenodo DOI (above) for the code
+* Cite the paper (below) for the algorithm
 
 ## Algorithm
 
