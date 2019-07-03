@@ -2,7 +2,6 @@
 Identify boundaries of the aurora with Defense Meteorology Satellite Program (DMSP) electron precipitation.
 
 [![Documentation Status](https://readthedocs.org/projects/ssj-auroral-boundary/badge/?version=latest)](https://ssj-auroral-boundary.readthedocs.io/en/latest/?badge=latest)
-
 [![DOI](https://zenodo.org/badge/154356043.svg)](https://zenodo.org/badge/latestdoi/154356043)
 
 ## How to cite
