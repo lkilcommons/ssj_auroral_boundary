@@ -3,6 +3,11 @@ Identify boundaries of the aurora with Defense Meteorology Satellite Program (DM
 
 [![Documentation Status](https://readthedocs.org/projects/ssj-auroral-boundary/badge/?version=latest)](https://ssj-auroral-boundary.readthedocs.io/en/latest/?badge=latest)
 
+## How to cite
+
+Cite the Zenodo DOI (above) for the code
+Cite the paper (below) for the algorithm
+
 ## Algorithm
 
 This code implements the auroral boundary identification technique described in:
@@ -13,6 +18,7 @@ Kilcommons, L. M., Redmon, R. J., & Knipp, D. J. (2017). A New DMSP Magnetometer
 
 ## Tested Operating Systems
 * Ubuntu Linux (14.04 and 18.04)
+* MacOS (Sierra, High Sierra)
 
 ## Tested Python Versions
 * 2.7 (Anaconda2)
@@ -28,8 +34,7 @@ files. An additional Python package (Spacepy) provides the python interface.
 
 2. [Geospacepy](https://github.com/lkilcommons/geospacepy-lite)
 This is a small python package which provides plotting routines and datetime
-handling. The installation instructions are on the Github page. Hopefully
-soon it will be on PyPI but it hasn't happened yet.
+handling. The installation instructions are on the Github page.
 
 ## Clone the github repo
 ```
