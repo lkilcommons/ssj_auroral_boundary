@@ -69,7 +69,7 @@ class absatday(object):
 	"""
 	def __init__(self,cdffile,
 					imgdir=None,make_plot=True,plot_failed=False,
-					csvdir=None,writecsv=True):
+					csvdir=None,writecsv=True, **kwargs):
 		"""Constructor for absatday
 		
 		Parameters
@@ -151,7 +151,7 @@ class absatday(object):
 		
 		cdffn_noext = os.path.splitext(os.path.split(cdffile)[-1])[0]
 		csvfile = cdffn_noext+'_boundaries.csv'
-		self.csv = abcsv(csvdir,csvfile,cdffile,writecsv=self.writecsv)
+		self.csv = abcsv(csvdir,csvfile,cdffile,writecsv=self.writecsv,**kwargs)
 
 		#Start processing the polar passes one by one
 		for i in range(len(self.xings)-1):
