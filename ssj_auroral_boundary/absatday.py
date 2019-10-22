@@ -8,8 +8,8 @@ import numpy as np
 import logging,sys,datetime,os,traceback
 
 from ssj_auroral_boundary import loggername
-from abpolarpass import abpolarpass
-from abcsv import abcsv
+from .abpolarpass import abpolarpass
+from .abcsv import abcsv
 
 class absatday(object):
 	"""Class for one satellite-day of SSJ data (one CDF file)
