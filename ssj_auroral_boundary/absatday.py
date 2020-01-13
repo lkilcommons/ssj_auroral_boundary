@@ -140,7 +140,7 @@ class absatday(object):
         latvar,ltvar = 'SC_APEX_LAT','SC_APEX_MLT'
         if latvar not in self.cdf or ltvar not in self.cdf:
             #v1.1.3
-            self.log.warn(('Unable to find APEX latitude or local '
+            self.log.warning(('Unable to find APEX latitude or local '
                        + 'time variables in CDF file. Falling '
                        +'back to AACGM magnetic coordinates'))
             latvar,ltvar = 'SC_AACGM_LAT','SC_AACGM_LTIME'
