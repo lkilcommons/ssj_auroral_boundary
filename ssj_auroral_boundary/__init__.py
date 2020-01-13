@@ -22,7 +22,7 @@ dmsp_spectrogram
 """
 from __future__ import print_function
 
-__version__ = str("0.1")
+__version__ = str("0.1.1")
 
 #Prefix for all package loggers
 loggername = 'ssj_auroral_boundary'
