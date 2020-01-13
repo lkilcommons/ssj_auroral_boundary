@@ -547,7 +547,12 @@ class abpolarpass(object):
 
     def moving_average(self,x,window_size):
         """Creates a weighted average smoothed version of x using the weights in window"""
-        return np.nanmean(self.rolling_window(np.concatenate((x[:window_size/2],x,x[-window_size/2+1:])),window_size),-1)
+        # Python 2 and 3 treat integer rounding differently.  Default to
+        # finding the floor value (old behaviour)
+        half_window = int(np.floor(0.5 * window_size))
+        return np.nanmean(self.rolling_window(np.concatenate((x[:half_window],
+                                                    x, x[-half_window:])),
+                                              window_size), -1)
 
     def find_segments(self):
         uts = self['uts']

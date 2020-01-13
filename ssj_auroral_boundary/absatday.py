@@ -17,8 +17,8 @@ except Exception as e:
     print(e)
 
 from ssj_auroral_boundary import loggername
-from abpolarpass import abpolarpass
-from abcsv import abcsv
+from ssj_auroral_boundary.abpolarpass import abpolarpass
+from ssj_auroral_boundary.abcsv import abcsv
 
 class absatday(object):
     """Class for one satellite-day of SSJ data (one CDF file)
