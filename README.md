@@ -6,7 +6,8 @@ Identify boundaries of the aurora with Defense Meteorology Satellite Program (DM
 
 ## If you just want the data
 
-The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are on Zenodo
+The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are on Zenodo.
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3373812.svg)](https://doi.org/10.5281/zenodo.3373812)
 
 
