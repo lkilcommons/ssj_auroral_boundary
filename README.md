@@ -4,17 +4,16 @@ Identify boundaries of the aurora with Defense Meteorology Satellite Program (DM
 [![Documentation Status](https://readthedocs.org/projects/ssj-auroral-boundary/badge/?version=latest)](https://ssj-auroral-boundary.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/154356043.svg)](https://zenodo.org/badge/latestdoi/154356043)
 
-## If you just want the data
-
-The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are on Zenodo.
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3373812.svg)](https://doi.org/10.5281/zenodo.3373812)
-
-
 ## How to cite
 
 * Cite the Zenodo DOI (above) for the code
 * Cite the paper (below) for the algorithm
+
+## I just want the data!
+
+The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are on Zenodo. Please cite the following DOI if you use the dataset in a publication, as well as citing the paper below.
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3373812.svg)](https://doi.org/10.5281/zenodo.3373812)
 
 ## Algorithm
 
