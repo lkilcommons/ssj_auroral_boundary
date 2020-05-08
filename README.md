@@ -9,17 +9,17 @@ Identify boundaries of the aurora with Defense Meteorology Satellite Program (DM
 * Cite the Zenodo DOI (above) for the code
 * Cite the paper (below) for the algorithm
 
-## I just want the data!
-
-The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are on Zenodo. Please cite the following DOI if you use the dataset in a publication, as well as citing the paper below.
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3373812.svg)](https://doi.org/10.5281/zenodo.3373812)
-
 ## Algorithm
 
 This code implements the auroral boundary identification technique described in:
 
 Kilcommons, L. M., Redmon, R. J., & Knipp, D. J. (2017). A New DMSP Magnetometer & Auroral Boundary Dataset and Estimates of Field Aligned Currents in Dynamic Auroral Boundary Coordinates. Journal of Geophysical Research: Space Physics, 2016JA023342. https://doi.org/10.1002/2016JA023342
+
+## I really just want some boundary data
+
+The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are on Zenodo. Please cite the following DOI if you use the dataset in a publication, as well as citing the paper above.
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3373812.svg)](https://doi.org/10.5281/zenodo.3373812)
 
 ## Installation
 
