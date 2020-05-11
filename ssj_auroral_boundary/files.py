@@ -92,7 +92,7 @@ def download_cdf_from_noaa(cdf_url, destination_cdffn):
     print(headers,content_type)
     if 'html' not in content_type.lower():
         response = requests.get(cdf_url,allow_redirects=True)
-        with open(destination_cdffn,'w') as f:
+        with open(destination_cdffn,'wb') as f:
             f.write(response.content)
     else:
         raise RuntimeError('URL %s is not downloadable' % (cdf_url))

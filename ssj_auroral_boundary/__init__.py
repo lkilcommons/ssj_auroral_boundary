@@ -1,6 +1,6 @@
 # Copyright 2018 SEDA Group at CU Boulder
-# Created by: 
-# Liam Kilcommons 
+# Created by:
+# Liam Kilcommons
 # Space Environment Data Analysis Group (SEDA)
 # Colorado Center for Astrodynamics Research (CCAR)
 # University of Colorado, Boulder (CU Boulder)
@@ -22,7 +22,7 @@ dmsp_spectrogram
 """
 from __future__ import print_function
 
-__version__ = str("0.1")
+__version__ = str("0.1.1")
 
 #Prefix for all package loggers
 loggername = 'ssj_auroral_boundary'
@@ -31,7 +31,4 @@ loggername = 'ssj_auroral_boundary'
 __all__ = ['absatday', 'abpolarpass', 'absegment', 'abcsv', 'files',
            'dmsp_spectrogram']
 
-try:
-    from ssj_auroral_boundary import *
-except ImportError as err:
-    print("problem importing {:s}: {:}".format(loggername, err))
+from ssj_auroral_boundary import *

@@ -16,7 +16,7 @@ mpl.use('Agg', warn=False, force=False)
 from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms
 
-from geospacepy import special_datetime, satplottools
+from geospacepy import satplottools
 
 from ssj_auroral_boundary import loggername
 from ssj_auroral_boundary.absegment import absegment
@@ -547,7 +547,12 @@ class abpolarpass(object):
 
     def moving_average(self,x,window_size):
         """Creates a weighted average smoothed version of x using the weights in window"""
-        return np.nanmean(self.rolling_window(np.concatenate((x[:window_size/2],x,x[-window_size/2+1:])),window_size),-1)
+        # Python 2 and 3 treat integer rounding differently.  Default to
+        # finding the floor value (old behaviour)
+        half_window = int(np.floor(0.5 * window_size))
+        return np.nanmean(self.rolling_window(np.concatenate((x[:half_window],
+                                                    x, x[-half_window:])),
+                                              window_size), -1)
 
     def find_segments(self):
         uts = self['uts']
@@ -685,7 +690,7 @@ class abpolarpass(object):
 
                 self.log.debug("Comparing \n#%d:%s and \n#%d:%s, \nFOM is %.3f" % (s1_ind,str(s1),s2_ind,str(s2),fom))
                 if not np.isfinite(fom):
-                    self.log.warn(fom_failure_reason)
+                    self.log.warning(fom_failure_reason)
 
         foms = np.array(foms)
         if len(foms)>0:
@@ -696,7 +701,7 @@ class abpolarpass(object):
             max_fom = None
             max_fom_ind = None
             self.failure_reason = 'No Valid Comparisons (b/c %s)' % (fom_failure_reason)
-            self.log.warn("No non-nan FOMs found! Means %s" % (fom_failure_reason))
+            self.log.warning("No non-nan FOMs found! Means %s" % (fom_failure_reason))
 
         return foms,combos,max_fom,max_fom_ind
 
@@ -733,7 +738,7 @@ class abpolarpass(object):
                 break
 
         if idx_equator1 is None:
-            self.log.warn('No 1st equatorward boundary found satisfying delta-t > %s' % (str(self.MIN_EQ_SPIKE_DT)))
+            self.log.warning('No 1st equatorward boundary found satisfying delta-t > %s' % (str(self.MIN_EQ_SPIKE_DT)))
 
 
         idx_pole1 = segpole1.ei
@@ -758,7 +763,7 @@ class abpolarpass(object):
                 break
 
         if idx_equator2 is None:
-            self.log.warn('No 2nd equatorward boundary found satisfying delta-t > %s' % (str(self.MIN_EQ_SPIKE_DT)))
+            self.log.warning('No 2nd equatorward boundary found satisfying delta-t > %s' % (str(self.MIN_EQ_SPIKE_DT)))
 
 
         return(idx_pole1, idx_equator1, idx_pole2, idx_equator2, segpole1,
