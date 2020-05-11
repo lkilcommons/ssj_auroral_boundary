@@ -16,7 +16,7 @@ mpl.use('Agg', warn=False, force=False)
 from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms
 
-from geospacepy import special_datetime, satplottools
+from geospacepy import satplottools
 
 from ssj_auroral_boundary import loggername
 from ssj_auroral_boundary.absegment import absegment
