@@ -29,6 +29,8 @@ The auroral boundaries (as daily CSV files) for F16,F17 and F18 2010 - 2014 are 
 
 ## Tested Python Versions
 * 2.7 (Anaconda2)
+* 3.6 (Anaconda)
+* 3.8 (Anaconda)
 
 ### Other Software Required
 There are a few tools used by this library that can't be installed as part of
@@ -41,7 +43,7 @@ files. An additional Python package (Spacepy) provides the python interface.
 
 2. [Geospacepy](https://github.com/lkilcommons/geospacepy-lite)
 This is a small python package which provides plotting routines and datetime
-handling. The installation instructions are on the Github page.
+handling.
 
 ## Clone the github repo
 ```
