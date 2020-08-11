@@ -134,8 +134,6 @@ class absatday(object):
 
         #Zero out any dubious fluxes
         self.diff_flux[self.counts <= countthresh] = 0.0
-                # DEBUG STATEMENT
-        #print self.diff_flux.shape
 
         latvar,ltvar = 'SC_APEX_LAT','SC_APEX_MLT'
         if latvar not in self.cdf or ltvar not in self.cdf:

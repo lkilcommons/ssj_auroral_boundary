@@ -9,9 +9,9 @@ import numpy as np
 import logging
 import matplotlib as mpl
 
-# If not running interactively, run using the non-GUI backend.  Suppress
-# warnings and don't force the backend change if backend already set.
-mpl.use('Agg', warn=False, force=False)
+# If not running interactively, run using the non-GUI backend. 
+# Don't force the backend change if backend already set.
+mpl.use('Agg', force=False)
 
 from matplotlib import pyplot as pp
 import matplotlib.transforms as mtransforms

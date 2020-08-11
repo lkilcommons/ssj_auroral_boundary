@@ -27,8 +27,13 @@ __version__ = str("0.1.1")
 #Prefix for all package loggers
 loggername = 'ssj_auroral_boundary'
 
-# Import all the modules
 __all__ = ['absatday', 'abpolarpass', 'absegment', 'abcsv', 'files',
            'dmsp_spectrogram']
 
-from ssj_auroral_boundary import *
+# Explicitly import all modules (in addition to defining __all__)
+from ssj_auroral_boundary import (absatday,
+                                    abpolarpass,
+                                    absegment,
+                                    abcsv,
+                                    files,
+                                    dmsp_spectrogram)
