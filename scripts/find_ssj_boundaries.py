@@ -28,7 +28,7 @@ def prepare_output_directories(data_rootdir,out_subdir):
             'csv': os.path.join(data_rootdir,out_subdir,'csv')
             }
 
-    for dirkey,directory in dirs.iteritems():
+    for dirkey,directory in dirs.items():
         if not os.path.exists(directory):
             os.makedirs(directory)
 
