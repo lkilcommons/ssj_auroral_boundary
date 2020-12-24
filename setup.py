@@ -13,7 +13,7 @@ from setuptools import setup, Extension
 from setuptools.command import install as _install
 
 setup(name='ssj_auroral_boundary',
-      version = "1.1",
+      version = "1.2",
       description = "Figure of Merit Boundary Identification for DMSP SSJ5",
       author = "Liam Kilcommons",
       author_email = 'liam.kilcommons@colorado.edu',
@@ -28,7 +28,7 @@ setup(name='ssj_auroral_boundary',
             The algorithm here is tuned for DMSP carrying version 5 of the SSJ
             detector, that is DMSP F16, F17 and F18.
             """,
-      install_requires=['numpy','matplotlib','spacepy','colorlog'],
+      install_requires=['numpy','matplotlib','colorlog'],
       packages=['ssj_auroral_boundary'],
       package_dir={'ssj_auroral_boundary' : 'ssj_auroral_boundary'},
       package_data={'ssj_auroral_boundary': ['test_data/*']},

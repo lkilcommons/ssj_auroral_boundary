@@ -9,12 +9,7 @@ import logging
 
 from geospacepy import special_datetime
 
-try:
-    from spacepy import pycdf
-except Exception as e:
-    print('Failed to import spacepy.pycdf; likely CDF C library was not found')
-    print('this is a fatal error unless you are building documentation')
-    print(e)
+from pycdflib.cdf import ReadOnlyCDF
 
 from ssj_auroral_boundary import loggername
 from ssj_auroral_boundary.abpolarpass import abpolarpass
@@ -104,7 +99,7 @@ class absatday(object):
         """
 
         self.log = logging.getLogger(loggername+'.'+self.__class__.__name__)
-        self.cdf = pycdf.CDF(cdffile)
+        self.cdf = ReadOnlyCDF(cdffile)
         #Parse out spacecraft so we know how to handle J4/J5 differences
         if 'dmsp' in cdffile:
             # Get the spacecraft number from the filename
@@ -118,19 +113,19 @@ class absatday(object):
         self.make_plot = make_plot # Make plots of passes T/F
         self.plot_failed = plot_failed #Plot failed identifications also T/F
         self.writecsv = writecsv # Write pass identifications to a file
-        self.time = self.cdf['Epoch'][:]
+        self.time = self.cdf['Epoch']
         self.uts = special_datetime.datetimearr2sod(self.time)
         self.hod = self.uts/3600.
-        self.diff_flux = self.cdf['ELE_DIFF_ENERGY_FLUX'][:]
-        self.diff_flux_std = self.cdf['ELE_DIFF_ENERGY_FLUX_STD'][:]
-        self.total_flux = self.cdf['ELE_TOTAL_ENERGY_FLUX'][:]
+        self.diff_flux = self.cdf['ELE_DIFF_ENERGY_FLUX']
+        self.diff_flux_std = self.cdf['ELE_DIFF_ENERGY_FLUX_STD']
+        self.total_flux = self.cdf['ELE_TOTAL_ENERGY_FLUX']
         #The uncertainty in the CDF is relative
-        self.total_flux_std = self.cdf['ELE_TOTAL_ENERGY_FLUX_STD'][:]
+        self.total_flux_std = self.cdf['ELE_TOTAL_ENERGY_FLUX_STD']
 
         #Handle filtering out any data without enough counts
         countthresh = 2.
-        self.counts = (self.cdf['ELE_COUNTS_OBS'][:] \
-                        -self.cdf['ELE_COUNTS_BKG'][:])
+        self.counts = (self.cdf['ELE_COUNTS_OBS'] \
+                        -self.cdf['ELE_COUNTS_BKG'])
 
         #Zero out any dubious fluxes
         self.diff_flux[self.counts <= countthresh] = 0.0
@@ -143,9 +138,9 @@ class absatday(object):
                        +'back to AACGM magnetic coordinates'))
             latvar,ltvar = 'SC_AACGM_LAT','SC_AACGM_LTIME'
 
-        self.mlat = self.cdf[latvar][:]
-        self.mlt = self.cdf[ltvar][:]
-        self.channel_energies = self.cdf['CHANNEL_ENERGIES'][:]
+        self.mlat = self.cdf[latvar]
+        self.mlt = self.cdf[ltvar]
+        self.channel_energies = self.cdf['CHANNEL_ENERGIES']
         self.xings = self.simple_passes(self.mlat)
         self.polarpasses = []
 
@@ -207,7 +202,7 @@ class absatday(object):
         if hasattr(self,var):
             return getattr(self,var)
         elif var in self.cdf:
-            return self.cdf[var][:]
+            return self.cdf[var]
         else:
             self.log.error(("Non-existent variable %s " % (str(var))
                             + "requested through getattr. Returning None"))
