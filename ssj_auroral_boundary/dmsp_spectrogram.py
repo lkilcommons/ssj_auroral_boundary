@@ -4,6 +4,7 @@ Some simple code to make particle flux spectrograms with matplotlib
          (minor modifications R. Redmon, A.G. Burrell)
 """
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as pp
 import datetime as dt
 
@@ -59,12 +60,6 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
         stackplot. If 'ax' is specified then so should 'ax_cb'.
 
     """
-    #Module for logrithmic colorbar spacing
-    from matplotlib.colors import LogNorm
-    #Module for locating dates on the x axis
-    import matplotlib.dates as mpldates
-    #Module for getting colormaps
-    import matplotlib.cm as cm
 
     if channel_energies is None:
         channel_energies = np.array([ 30000., 20400., 13900., 9450., 6460.,
@@ -74,7 +69,7 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
 
     # if Axis not specified then create one
     if ax is None:
-        f = pp.figure(figsize=(12,6),dpi=300)
+        f = pp.figure(figsize=(12, 6), dpi=300)
         ax = pp.axes()
 
     if datalabel is not None:
@@ -86,7 +81,7 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
         times = times.flatten()
 
     if isinstance(times[0], dt.datetime):
-        mpl_times = mpldates.date2num(times)
+        mpl_times = mpl.dates.date2num(times)
     else:
         mpl_times = times
 
@@ -102,10 +97,10 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
 
     # Hard coded start/end bins taken from SSDP; not sure how they are derived,
     # though this does result in bins visually centered correctly on their
-    # central energies
+    # central energies.
     bin_edges = np.logspace(np.log10(36340.), np.log10(24.76),
-                            len(channel_energies) + 1) # add one for endpoint
-    T,CH_E = np.meshgrid(mpl_times, bin_edges)
+                            len(channel_energies), endpoint=True)
+    t_mesh, ch_e_mesh = np.meshgrid(mpl_times, bin_edges)
 
     # Infinite, and Negative fluxes => NaN
     inds = np.nonzero((~np.isfinite(flux)) | (flux < 0.))
@@ -121,15 +116,15 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
         z_min = cblims[0]
         z_max = cblims[1]
 
-    #Set the over and under-range colors for the colorbar
-    cmap = cm.get_cmap(color_map)
-    cmap.set_bad('white',.1)
+    # Set the over and under-range colors for the colorbar
+    cmap = mpl.cm.get_cmap(color_map).copy()
+    cmap.set_bad('white', .1)
     cmap.set_over('black')
     cmap.set_under('grey')
 
-    mappable = ax.pcolormesh(T, CH_E, masked_flux.transpose(), cmap=cmap,
-                             norm=LogNorm(vmin=z_min, vmax=z_max))
-    #mappable.set_rasterized( True )
+    mappable = ax.pcolormesh(t_mesh, ch_e_mesh, masked_flux.transpose(),
+                             cmap=cmap, shading='gouraud',
+                             norm=mpl.colors.LogNorm(vmin=z_min, vmax=z_max))
 
     if ax_cb is None:
         pp.colorbar(mappable,label=fluxunits,ax=ax)
@@ -139,27 +134,27 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
     # if Axis not specified then add x-axis tick marks
     if label_it and isinstance(times[0], dt.datetime):
 
-        plotwidth_h = (times[-1]-times[0]).total_seconds()/3600.
-        plotwidth_m = (times[-1]-times[0]).total_seconds()/60.
+        plotwidth_h = (times[-1] - times[0]).total_seconds() / 3600.
+        plotwidth_m = (times[-1] - times[0]).total_seconds() / 60.
 
         if  plotwidth_m <= 10.:
             # if the plot width is less than 10 minutes tick mark every minute
-            majloc = mpldates.MinuteLocator(interval=1)
+            majloc = mpl.dates.MinuteLocator(interval=1)
         elif  plotwidth_m <= 30.:
             # if the plot width is less than 1/2 hour tick mark every 5 minutes
-            majloc = mpldates.MinuteLocator(interval=5)
+            majloc = mpl.dates.MinuteLocator(interval=5)
         elif  plotwidth_h <= 1:
             # if the plot width is less than 1 hour, but more than 30 minutes,
             # tick mark every 10 minutes
-            majloc = mpldates.MinuteLocator(interval=10)
+            majloc = mpl.dates.MinuteLocator(interval=10)
         elif plotwidth_h <= 3:
             # if less than 3 hours, but more than 1 use every 15 minutes
-            majloc = mpldates.MinuteLocator(interval=15)
+            majloc = mpl.dates.MinuteLocator(interval=15)
         elif plotwidth_h <= 5:
             # if less than 5 hours, but more than 3 use every half hour
-            majloc = mpldates.MinuteLocator(interval=30)
+            majloc = mpl.dates.MinuteLocator(interval=30)
         else:
-            majloc = mpldates.HourLocator() #tick mark every hour
+            majloc = mpl.dates.HourLocator() #tick mark every hour
 
         #Set the date locator
         ax.xaxis.set_major_locator(majloc)
@@ -173,28 +168,29 @@ def dmsp_spectrogram(times, flux, channel_energies=None, lat=None, lt=None,
         # couldn't figure out how to get all of the relavent lat and LT
         # information into it
 
-        #Get the tick marks
-        xticks = ax.get_xticks()
+        # Get the tick marks
+        xticks = ax.get_xticks().tolist()
 
         xlabels = []
         for tick in xticks:
-            ind = np.nonzero(mpl_times==tick)[0] #Nonzero returns array ARG!
-            if len(ind)>0:
-                #Sometimes tick is not found if it wants to tickmark outside of
-                # data range.  Have to put additional index to get datetime
-                # instead of array of length 1 with datetime in it
+            ind = np.nonzero(mpl_times == tick)[0] # Nonzero returns array ARG!
+            if len(ind) > 0:
+                # Sometimes tick is not found if it wants to tickmark outside
+                # of the data range.  Have to put additional index to get
+                # datetime instead of array of length 1 with datetime in it
                 tickstr = "%.2d:%.2d" % (times[ind[0]].hour,
                                          times[ind[0]].minute)
                 if lat is not None:
-                    tickstr+="\n%.2f" % (lat[ind])
+                    tickstr += "\n%.2f" % (lat[ind])
                 if lt is not None:
-                    tickstr+="\n%.2f" % (lt[ind])
+                    tickstr += "\n%.2f" % (lt[ind])
                 xlabels.append(tickstr)
             else:
                 # Convert the tick position to a time
-                dtime = mpldates.num2date(tick)
+                dtime = mpl.dates.num2date(tick)
                 xlabels.append('%.2d:%.2d' % (dtime.hour, dtime.minute))
 
+        ax.xaxis.set_major_locator(mpl.ticker.FixedLocator(xticks))
         ax.set_xticklabels(xlabels)
 
     ax.set_yscale('log')
