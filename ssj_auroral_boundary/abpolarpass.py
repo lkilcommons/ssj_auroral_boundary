@@ -177,8 +177,8 @@ class abpolarpass(object):
                 split_text = os.path.split(self.satday.cdffn)[-1]
                 self.figfile = os.path.splitext(split_text)[0] + \
                 '_{:s}pass_uts{:05.0f}_uts{:05.0f}.png'.format(self.hemi, \
-                                                np.floor(self['uts'][0][0]), \
-                                                np.floor(self['uts'][-1][0]))
+                                                np.floor(self['uts'][0]), \
+                                                np.floor(self['uts'][-1]))
                 self.figfile = os.path.join(self.satday.imgdir,self.figfile)
                 self.log.debug("Figure file is %s" % (self.figfile))
                 f.savefig(self.figfile, dpi=300.)
@@ -315,14 +315,14 @@ class abpolarpass(object):
         #a2.plot(self['uts'],self['intflux']-3*self['intflux']*fluxstd,'g.',ms=5,label='3*std lower bound')
         a2.set_xlabel("UT Second of Day")
         a2.set_yscale('log')
-        a2.axhline(self.FLUX_MIN,label='Threshold',color='grey')
+        a2.axhline(self.FLUX_MIN, label='Threshold', color='grey')
         a2_title = "Integrated Flux (9 Highest E Channels %.2feV-%.2feV)" % (self['channel_energies'][0], self['channel_energies'][8])
         a2.set_title(a2_title, fontsize="medium")
 
         dmsp_spectrogram.dmsp_spectrogram(self['time'], self['diff_flux'],
                                           self['channel_energies'],
                                           lat=self['mlat'], lt=self['mlt'],
-                                          ax=a3, cblims=[1e5,1e10])
+                                          ax=a3, cblims=[1e5, 1e10])
         #a3.set_ylim([1e2,1e5])
 
         if self.segments is not None:
@@ -333,9 +333,10 @@ class abpolarpass(object):
         a2.grid(True)
         a3.grid(True)
 
-        lw=1.5
-        txtshift=5
-        #Add boundaries
+        lw = 1.5
+        txtshift = 5
+
+        # Add boundaries
         if self.idx_equator1 is not None:
             a.plot(X[self.idx_equator1], Y[self.idx_equator1], 'bo', alpha=.5)
             a2.axvline(self['uts'][self.idx_equator1], color='b', label='EQ1',
