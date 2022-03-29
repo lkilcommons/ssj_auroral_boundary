@@ -127,17 +127,17 @@ class absatday(object):
         #The uncertainty in the CDF is relative
         self.total_flux_std = self.cdf['ELE_TOTAL_ENERGY_FLUX_STD'][:]
 
-        #Handle filtering out any data without enough counts
+        # Handle filtering out any data without enough counts
         countthresh = 2.
-        self.counts = (self.cdf['ELE_COUNTS_OBS'][:] \
-                        -self.cdf['ELE_COUNTS_BKG'][:])
+        self.counts = (self.cdf['ELE_COUNTS_OBS'][:]
+                       - self.cdf['ELE_COUNTS_BKG'][:])
 
         #Zero out any dubious fluxes
         self.diff_flux[self.counts <= countthresh] = 0.0
 
         latvar,ltvar = 'SC_APEX_LAT','SC_APEX_MLT'
         if latvar not in self.cdf or ltvar not in self.cdf:
-            #v1.1.3
+            # v1.1.3
             self.log.warning(('Unable to find APEX latitude or local '
                        + 'time variables in CDF file. Falling '
                        +'back to AACGM magnetic coordinates'))
@@ -149,30 +149,28 @@ class absatday(object):
         self.xings = self.simple_passes(self.mlat)
         self.polarpasses = []
 
-        #Look for environemnt variables to define paths if no paths provided
-        imgdir = self.if_none_use_envvar(imgdir,'DMSP_DIR_ABIMG')
+        # Look for environemnt variables to define paths if no paths provided
+        imgdir = self.if_none_use_envvar(imgdir, 'DMSP_DIR_ABIMG')
         if imgdir is None:
-            raise RuntimeError('No image dir passed & no '
-                                           + 'DMSP_DIR_ABIMG envvar')
+            raise RuntimeError(
+                'No image dir passed & no DMSP_DIR_ABIMG envvar')
         self.imgdir = imgdir
 
         csvdir = self.if_none_use_envvar(csvdir, 'DMSP_DIR_ABCSV')
         if csvdir is None:
-            raise RuntimeError('No csv dir passed & no '
-                               + 'DMSP_DIR_ABCSV envvar')
+            raise RuntimeError('No csv dir passed & no DMSP_DIR_ABCSV envvar')
 
         cdffn_noext = os.path.splitext(os.path.split(cdffile)[-1])[0]
-        csvfile = cdffn_noext + '_boundaries.csv'
+        csvfile = '_'.join([cdffn_noext, 'boundaries.csv'])
         self.csv = abcsv(csvdir, csvfile, cdffile, csvvars=csvvars,
                          writecsv=self.writecsv)
 
-        #Start processing the polar passes one by one
-        for i in range(len(self.xings)-1):
-            newpass = abpolarpass(self, self.xings[i],
-                                              self.xings[i+1]-1)
+        # Start processing the polar passes one by one
+        for i in range(len(self.xings) - 1):
+            newpass = abpolarpass(self, self.xings[i], self.xings[i + 1] - 1)
             self.polarpasses.append(newpass)
 
-    def if_none_use_envvar(self,checkvar,envvar):
+    def if_none_use_envvar(self, checkvar, envvar):
         """Check for environment variable envvar if checkvar is None
         """
         if checkvar is None and envvar in os.environ:
@@ -182,14 +180,14 @@ class absatday(object):
         else:
             return checkvar
 
-    def simple_passes(self,latitude):
+    def simple_passes(self, latitude):
         """Finds all the equator crossings"""
         npts = len(latitude.flatten())
         entered_north = []
         entered_south = []
 
         for k in range(1,npts):
-            #poleward crossing
+            # poleward crossing
             if latitude[k-1] < 0. and latitude[k] >= 0.:
                 entered_north.append(k)
                 self.log.info("Entered Northern Hemisphere: ind"
